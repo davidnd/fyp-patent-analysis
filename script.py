@@ -1,14 +1,21 @@
 import xml.etree.ElementTree as ET
 from nltk.corpus import stopwords
-# import unicodedata, sys
 from unidecode import unidecode
-from model import *
-import model, string
+from model import Assignee, Inventor, Patent
+import string
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+
+filename = "data.xml"
 
 stopwordsList = set(stopwords.words('english'))
 # table = dict.fromkeys(i for i in xrange(sys.maxunicode) if unicodedata.category(unichr(i)).startswith('P'))
 table = string.maketrans(string.punctuation, ' '*len(string.punctuation))
+
+engine = create_engine('mysql://root:root@localhost/patent')
+Session = sessionmaker(bind=engine)
 session = Session()
+
 def xmlSplitter(data, separator = lambda x: x.startswith("<?xml")):
     buff = []
     for line in data:
@@ -43,12 +50,12 @@ def getElementAsciiText(element):
         text = unidecode(text)
     return text
 num = 0
-for item in xmlSplitter(open('extract.xml', 'r')):
-    docnumber = None
-    abstract = None
-    claimstext = None
-    title = None
-    description = None
+for item in xmlSplitter(open(filename, 'r')):
+    docnumber = ""
+    abstract = ""
+    claimstext = ""
+    title = ""
+    description = ""
     date = None
     cpccode = ""
     print "Indexing doc num ", num;

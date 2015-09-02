@@ -30,10 +30,10 @@ class Patent(Base):
     assignees = relationship("Assignee", secondary=patentassignee)
     inventors = relationship("Inventor", secondary=patentinventor)
     def __init__(self, docnumber, title, abstract, cpccode, claims, description, date):
-        self.docnumber = docnumber
-        self.title = title
+        self.docnumber = docnumber[:20]
+        self.title = title[:250]
         self.abstract = abstract
-        self.cpccode = cpccode
+        self.cpccode = cpccode[:250]
         self.claims = claims
         self.description = description
         self.date = date
@@ -47,23 +47,23 @@ class Inventor(Base):
     state = Column(String(50))
     country = Column(String(50))
     def __init__(self, lastname, firstname, city, state, country):
-        self.lastname = lastname
-        self.firstname = firstname
-        self.city = city
-        self.state = state
-        self.country = country
+        self.lastname = lastname[:50]
+        self.firstname = firstname[:50]
+        self.city = city[:50]
+        self.state = state[:50]
+        self.country = country[:50]
 
 
 class Assignee(Base):
     __tablename__ = "assignees"
     id = Column(Integer, primary_key=True)
-    orgname = Column(String(50))
+    orgname = Column(String(100))
     city = Column(String(50))
     country = Column(String(50))
     def __init__(self, orgname, city, country):
-        self.orgname = orgname
-        self.city = city
-        self.country = country
+        self.orgname = orgname[:100]
+        self.city = city[:50]
+        self.country = country[:50]
 
 
 Base.metadata.create_all(engine, checkfirst=True)
