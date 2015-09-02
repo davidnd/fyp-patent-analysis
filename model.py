@@ -24,7 +24,7 @@ class Patent(Base):
     title = Column(String(250))
     abstract = Column(Text)
     cpccode = Column(String(250))
-    claims = Column(Text)
+    claims = Column(LONGTEXT)
     description = Column(LONGTEXT)
     date = Column(Date)
     assignees = relationship("Assignee", secondary=patentassignee)
