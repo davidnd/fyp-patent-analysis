@@ -65,5 +65,46 @@ class Assignee(Base):
         self.city = city[:50]
         self.country = country[:50]
 
+class Section(Base):
+    __tablename__ = "sections"
+    id = Column(Integer, primary_key=True)
+    symbol=Column(String(1))
+    description=Column(String(100))
+    count=Column(Integer)
+    subsections=relationship("Subsection")
+    def __init__(self, symbol, desc):
+        self.symbol = symbol
+        self.desc = desc
+        self.count = 0
+
+class Subsection(Base):
+    __tablename__ = "subsections"
+    id = Column(Integer, primary_key=True)
+    section_id = Column(Integer, ForeignKey('sections.id'))
+    symbol=Column(String(1))
+    description=Column(String(100))
+    count=Column(Integer)
+    classes=relationship("Class")
+    def __init__(self, symbol, desc, ):
+        self.symbol = symbol
+        self.desc = desc
+        self.count = 0
+
+class Class(Base):
+    __tablename__ = "classes"
+    id = Column(Integer, primary_key=True)
+    subsection_id = Column(Integer, ForeignKey('subsections.id'))
+    symbol=Column(String(3))
+    description=Column(String(250))
+    count=Column(Integer)
+    subclasses=relationship('Subclass')
+
+class Subclass(Base):
+    __tablename__="subclasses"
+    id = Column(Integer, primary_key=True)
+    class_id=Column(Integer, ForeignKey('classes.id'))
+    symbol=Column(String(4))
+    description=Column(String(300))
+    count=Column(Integer)
 
 Base.metadata.create_all(engine, checkfirst=True)

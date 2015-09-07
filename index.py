@@ -1,56 +1,17 @@
-import xml.etree.ElementTree as ET
-from nltk.corpus import stopwords
-from unidecode import unidecode
 from model import Assignee, Inventor, Patent
-import string
+import xml.etree.ElementTree as ET
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+import utils
 
 filename = "data.xml"
-
-stopwordsList = set(stopwords.words('english'))
-# table = dict.fromkeys(i for i in xrange(sys.maxunicode) if unicodedata.category(unichr(i)).startswith('P'))
-table = string.maketrans(string.punctuation, ' '*len(string.punctuation))
 
 engine = create_engine('mysql://root:root@localhost/patent')
 Session = sessionmaker(bind=engine)
 session = Session()
 
-def xmlSplitter(data, separator = lambda x: x.startswith("<?xml")):
-    buff = []
-    for line in data:
-        if(separator(line)):
-            if buff:
-                yield "".join(buff)
-                buff[:] = []
-        buff.append(line)
-    yield ''.join(buff)
-
-def getElementText(element):
-    if(element is None):
-        return ""
-    text = "".join(element.itertext())
-    if(isinstance(text, unicode)):
-        text = unidecode(text)
-    text = text.translate(table)
-    text = ''.join([i for i in text if not i.isdigit()])
-    text = " ".join([i for i in text.lower().split() if i not in stopwordsList])
-    return text
-def getFirstDescendant(ancestor, name):
-    descendant = list(ancestor.iter(name))
-    if(len(descendant)):
-        return descendant[0]
-    else:
-        return None
-def getElementAsciiText(element):
-    if(element is None):
-        return ""
-    text = element.text
-    if(isinstance(text, unicode)):
-        text = unidecode(text)
-    return text
 num = 0
-for item in xmlSplitter(open(filename, 'r')):
+for item in utils.xmlSplitter(open(filename, 'r')):
     docnumber = ""
     abstract = ""
     claimstext = ""
@@ -61,18 +22,18 @@ for item in xmlSplitter(open(filename, 'r')):
     print "Indexing doc num ", num;
     root = ET.fromstring(item)
     # get abstract
-    abstract = getElementText(root.find("abstract"))
+    abstract = utils.getElementText(root.find("abstract"))
     # print "ABSTRACT: " + abstract
     # get claims
-    claimstext = getElementText(root.find("claims"))
+    claimstext = utils.getElementText(root.find("claims"))
     # print "CLAIM TEXT: " + claimstext
     # get title
     titleIter = list(root.iter("invention-title"))
     if(len(titleIter)):
-        title = getElementText(titleIter[0])
+        title = utils.getElementText(titleIter[0])
         # print "TITLE: " + title
     # get description
-    description = getElementText(root.find("description"))
+    description = utils.getElementText(root.find("description"))
     # print "DESCRIPTION length: ", len(description)
     # get document number and date
     appref = list(root.iter("application-reference"))
@@ -111,20 +72,20 @@ for item in xmlSplitter(open(filename, 'r')):
         # print "Num of applicants: ", len(applicants)
         for app in applicants:
             attributes = app.attrib
-            orgname = getFirstDescendant(app, "orgname")
+            orgname = utils.getFirstDescendant(app, "orgname")
             if(orgname is not None):
-                name = getElementAsciiText(orgname)
+                name = utils.getElementAsciiText(orgname)
             else:
-                lastnameNode = getFirstDescendant(app, "last-name")
-                lastname = getElementAsciiText(lastnameNode)
+                lastnameNode = utils.getFirstDescendant(app, "last-name")
+                lastname = utils.getElementAsciiText(lastnameNode)
 
-                firstnameNode = getFirstDescendant(app, "first-name")
-                firstname = getElementAsciiText(firstnameNode)
+                firstnameNode = utils.getFirstDescendant(app, "first-name")
+                firstname = utils.getElementAsciiText(firstnameNode)
                 name = firstname + " " + lastname;
-            countryNode = getFirstDescendant(app, "country")
-            country = getElementAsciiText(countryNode)
-            cityNode = getFirstDescendant(app, "city")
-            city = getElementAsciiText(cityNode)
+            countryNode = utils.getFirstDescendant(app, "country")
+            country = utils.getElementAsciiText(countryNode)
+            cityNode = utils.getFirstDescendant(app, "city")
+            city = utils.getElementAsciiText(cityNode)
             tempAssignee = session.query(Assignee).filter(Assignee.orgname == name, Assignee.city == city, Assignee.country == country)
             if(tempAssignee.count()==0):
                 applicant = Assignee(name, city, country)
@@ -134,12 +95,12 @@ for item in xmlSplitter(open(filename, 'r')):
                 assigneesList.append(tempAssignee.first())
     else:
         for i in assignees:
-            orgnameNode = getFirstDescendant(i, "orgname")
-            orgname = getElementAsciiText(orgnameNode)
-            countryNode = getFirstDescendant(i, "country")
-            country = getElementAsciiText(countryNode)
-            cityNode = getFirstDescendant(i, "city")
-            city = getElementAsciiText(cityNode)
+            orgnameNode = utils.getFirstDescendant(i, "orgname")
+            orgname = utils.getElementAsciiText(orgnameNode)
+            countryNode = utils.getFirstDescendant(i, "country")
+            country = utils.getElementAsciiText(countryNode)
+            cityNode = utils.getFirstDescendant(i, "city")
+            city = utils.getElementAsciiText(cityNode)
             tempAssignee = session.query(Assignee).filter(Assignee.orgname == orgname, Assignee.city == city, Assignee.country == country)
             if(tempAssignee.count()==0):
                 assignee = Assignee(orgname, city, country)
@@ -153,16 +114,16 @@ for item in xmlSplitter(open(filename, 'r')):
     inventors = list(root.iter("inventor"))
     inventorsList = []
     for i in inventors:
-        firstnameNode = getFirstDescendant(i, "first-name")
-        firstname = getElementAsciiText(firstnameNode)
-        lastnameNode = getFirstDescendant(i, "last-name")
-        lastname = getElementAsciiText(lastnameNode)
-        countryNode = getFirstDescendant(i, "country")
-        country = getElementAsciiText(countryNode)
-        cityNode = getFirstDescendant(i, "city")
-        city = getElementAsciiText(cityNode)
-        stateNode = getFirstDescendant(i, 'state')
-        state = getElementAsciiText(stateNode)
+        firstnameNode = utils.getFirstDescendant(i, "first-name")
+        firstname = utils.getElementAsciiText(firstnameNode)
+        lastnameNode = utils.getFirstDescendant(i, "last-name")
+        lastname = utils.getElementAsciiText(lastnameNode)
+        countryNode = utils.getFirstDescendant(i, "country")
+        country = utils.getElementAsciiText(countryNode)
+        cityNode = utils.getFirstDescendant(i, "city")
+        city = utils.getElementAsciiText(cityNode)
+        stateNode = utils.getFirstDescendant(i, 'state')
+        state = utils.getElementAsciiText(stateNode)
         tempInventor = session.query(Inventor).filter(Inventor.lastname == lastname, Inventor.firstname == firstname, Inventor.city == city,Inventor.state == state, Inventor.country == country)
         if(tempInventor.count()==0):
             inventor = Inventor(lastname, firstname, city, state, country)
