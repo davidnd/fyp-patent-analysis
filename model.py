@@ -17,6 +17,11 @@ patentinventor = Table('patentinventor', Base.metadata,
     Column('inventorid', Integer, ForeignKey('inventors.id'))
 )
 
+patentsubclass = Table('patentsubclass', Base.metadata,
+    Column('patentid', Integer, ForeignKey('patents.id')),
+    Column('subclassid', Integer, ForeignKey('subclasses.id'))
+)
+
 class Patent(Base):
     __tablename__ = 'patents'
     id = Column(Integer, primary_key=True)
@@ -29,6 +34,7 @@ class Patent(Base):
     date = Column(Date)
     assignees = relationship("Assignee", secondary=patentassignee)
     inventors = relationship("Inventor", secondary=patentinventor)
+    subclasses = relationship('Subclass', secondary=patentsubclass)
     def __init__(self, docnumber, title, abstract, cpccode, claims, description, date):
         self.docnumber = docnumber[:20]
         self.title = title[:250]
@@ -74,20 +80,20 @@ class Section(Base):
     subsections=relationship("Subsection")
     def __init__(self, symbol, desc):
         self.symbol = symbol
-        self.desc = desc
+        self.description = desc
         self.count = 0
 
 class Subsection(Base):
     __tablename__ = "subsections"
     id = Column(Integer, primary_key=True)
     section_id = Column(Integer, ForeignKey('sections.id'))
-    symbol=Column(String(1))
+    symbol=Column(String(3))
     description=Column(String(100))
     count=Column(Integer)
     classes=relationship("Class")
-    def __init__(self, symbol, desc, ):
+    def __init__(self, symbol, desc):
         self.symbol = symbol
-        self.desc = desc
+        self.description = desc
         self.count = 0
 
 class Class(Base):
@@ -95,16 +101,24 @@ class Class(Base):
     id = Column(Integer, primary_key=True)
     subsection_id = Column(Integer, ForeignKey('subsections.id'))
     symbol=Column(String(3))
-    description=Column(String(250))
+    description=Column(Text)
     count=Column(Integer)
     subclasses=relationship('Subclass')
+    def __init__(self, symbol, desc):
+        self.symbol = symbol
+        self.description = desc
+        self.count = 0
 
 class Subclass(Base):
     __tablename__="subclasses"
     id = Column(Integer, primary_key=True)
     class_id=Column(Integer, ForeignKey('classes.id'))
     symbol=Column(String(4))
-    description=Column(String(300))
+    description=Column(Text)
     count=Column(Integer)
+    def __init__(self, symbol, desc):
+        self.symbol = symbol
+        self.description = desc
+        self.count = 0
 
 Base.metadata.create_all(engine, checkfirst=True)
