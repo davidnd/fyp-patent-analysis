@@ -1,5 +1,5 @@
 module.exports = function(sequelize, DataTypes){
-	var Subclass = sequelize.define("subclass", {
+	var Subclass = sequelize.define("Subclass", {
 		id: {type: DataTypes.INTEGER, primaryKey:true},
 		symbol: DataTypes.STRING,
 		description: DataTypes.STRING,

@@ -1,5 +1,5 @@
 module.exports = function(sequelize, DataTypes){
-	var Subsection = sequelize.define("subsection", {
+	var Subsection = sequelize.define("Subsection", {
 		id: {type: DataTypes.INTEGER, primaryKey:true},		
 		symbol: DataTypes.STRING,
 		description: DataTypes.STRING,
