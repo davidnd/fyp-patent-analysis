@@ -60,4 +60,6 @@ target/
 *.xml
 
 .DS_Store
-cpcschema
+scripts/cpcschema
+
+data

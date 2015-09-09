@@ -1,10 +1,10 @@
-from model import Assignee, Inventor, Patent
+from model import Assignee, Inventor, Patent, Subclass
 import xml.etree.ElementTree as ET
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import utils
 
-filename = "data.xml"
+filename = "ipa150312.xml"
 
 engine = create_engine('mysql://root:root@localhost/patent')
 Session = sessionmaker(bind=engine)
@@ -48,9 +48,12 @@ for item in utils.xmlSplitter(open(filename, 'r')):
             date = date[0].text
             date = date[:4] + "-" + date[4:6] + "-" + date[6:]
             # print date
+    if(session.query(Patent.id).filter(Patent.docnumber == docnumber).count()):
+        print "Patent already indexed, move to next one"
+        continue
+    cpcnodes = list(root.iter("classification-cpc"))
     # get classification code
-    cpclist = list(root.iter("classification-cpc"))
-    for cpc in cpclist:
+    for cpc in cpcnodes:
         section = cpc.find("section").text
         classlv = cpc.find("class").text
         subclass = cpc.find("subclass").text
@@ -58,11 +61,19 @@ for item in utils.xmlSplitter(open(filename, 'r')):
         subgroup = cpc.find('subgroup').text
         cpccode = cpccode + section+classlv+subclass+maingroup+"/"+subgroup+";"
     # print cpccode
-    if(session.query(Patent.id).filter(Patent.docnumber == docnumber).count()):
-        print "Patent already indexed, move to next one"
-        continue
-    # print claimstext
+    
     patent = Patent(docnumber, title, abstract, cpccode, claimstext, description, date)
+    cpccodes = []
+    # assign patent to subclass and update count
+    if(cpccode):
+        cpccodes = [x[:4] for x in cpccode.split(';') if x]
+        cpccodes = set(cpccodes)
+        for code in cpccodes:
+            subclass = session.query(Subclass).filter(Subclass.symbol == code).first()
+            # add sublcass for patent
+            patent.subclasses.append(subclass)
+            subclass.count+=1
+            session.add(subclass)
     # get assignees
     assignees = list(root.iter("assignee"))
     assigneesList = []
