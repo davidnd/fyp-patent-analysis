@@ -1,5 +1,23 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+	div.container-fluid(ng-app="fyp")
+		div(ng-controller='IndexController', ng-init="showtab(1)")
+			ul.nav.nav-tabs.nav-justified
+				li#sectiontab.active
+					a.tablink(href='#tab1', data-toggle='tab', ng-click="showtab(1)") Sections
+				li#subsectab
+					a.tablink(href='#tab2', data-toggle='tab', ng-click="showtab(2)") Subsections
+				li#classtab
+					a.tablink(href='#tab3', data-toggle='tab', ng-click="showtab(3)") Classes
+				li#subclasstab
+					a.tablink(href='#tab4', data-toggle='tab', ng-click="showtab(4)") Subclasses	
+			div.tab-content#tab-div
+				div.tab-pane#section-div.active
+					canvas#tab1
+				div.tab-pane#subsec-div
+					canvas#tab2
+				div.tab-pane#class-div
+					canvas#tab3
+				div.tab-pane#subclass-div
+					canvas#tab4

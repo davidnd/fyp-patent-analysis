@@ -7,6 +7,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 router.get('/sections', IndexController.getSections);
-router.get('/subs', IndexController.getSubsections);
+router.get('/subsections', IndexController.getSubsections);
+router.get('/classes', IndexController.getClasses);
+router.get('/subclasses', IndexController.getSubclasses);
 
 module.exports = router;
