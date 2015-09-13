@@ -7,3 +7,12 @@ canvas{
 	height: 100%;
 	margin: 0;
 }
+.graph-radio{
+	margin-bottom: 50px;
+	margin-left: auto;
+	margin-right: auto;
+	float: none;
+}
+#tab-div svg{
+	height: 500px;
+}

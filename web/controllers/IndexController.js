@@ -62,4 +62,16 @@ exports.getSubclasses = function(req, res, next){
 	      error: err
     	});
 	});
+};
+exports.getPatents = function (req, res, next) {
+	models.Patent.findAll({
+		limit:1000
+	}).then(function (patents) {
+		res.send(patents);
+	}).catch(function (err) {
+		res.render('error', {
+			message:err.message,
+			error:err
+		});
+	});
 }

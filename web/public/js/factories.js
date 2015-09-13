@@ -1,8 +1,15 @@
 (function(){
     angular.module('fyp').factory('Utils', function($http){
+        var displayType = "piechart";
         return {
             //util methods here
-            generatePieChartData: generatePieChartData
+            generatePieChartData: generatePieChartData,
+            setDisplayType: function (type) {
+                displayType = type;
+            },
+            getDisplayType: function(){
+                return displayType;
+            }
         };
         function generatePieChartData(data){
             var returneddata =[];
@@ -22,9 +29,6 @@
             }
             return returneddata;
         };
-        function switchTab(){
-
-        }
     });
     angular.module('fyp').factory('Section', function($resource){
         return $resource('/sections');

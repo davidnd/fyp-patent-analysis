@@ -2,22 +2,32 @@ extends layout
 
 block content
 	div.container-fluid(ng-app="fyp")
-		div(ng-controller='IndexController', ng-init="showtab(1)")
+		div.graph-radio(ng-controller='RadioController')
+			label.radio-inline
+				input(type='radio', name='graphtype', id='pie-chart', ng-model = "value", value = "piechart", ng-change="setType(value)", ng-checked='true') 
+				| Pie Chart
+			label.radio-inline
+				input(type='radio', name='graphtype', id='time-series', ng-model='value', value='timeseries', ng-change="setType(value)") 
+				| Time Series
+
+		div(ng-controller='IndexController')
 			ul.nav.nav-tabs.nav-justified
 				li#sectiontab.active
-					a.tablink(href='#tab1', data-toggle='tab', ng-click="showtab(1)") Sections
+					a.tablink(href='#tab1', data-toggle='tab', ng-click="showSection()") Sections
 				li#subsectab
-					a.tablink(href='#tab2', data-toggle='tab', ng-click="showtab(2)") Subsections
+					a.tablink(href='#tab2', data-toggle='tab', ng-click="showSubsection()") Subsections
 				li#classtab
-					a.tablink(href='#tab3', data-toggle='tab', ng-click="showtab(3)") Classes
+					a.tablink(href='#tab3', data-toggle='tab', ng-click="showClass()") Classes
 				li#subclasstab
-					a.tablink(href='#tab4', data-toggle='tab', ng-click="showtab(4)") Subclasses	
+					a.tablink(href='#tab4', data-toggle='tab', ng-click="showSubclass()") Subclasses	
 			div.tab-content#tab-div
-				div.tab-pane#section-div.active
-					canvas#tab1
-				div.tab-pane#subsec-div
-					canvas#tab2
-				div.tab-pane#class-div
-					canvas#tab3
-				div.tab-pane#subclass-div
-					canvas#tab4
+				div.tab-pane#section-tab.active
+					canvas#section-canvas
+				div.tab-pane#subsec-tab
+					canvas#subsec-canvas
+				div.tab-pane#class-tab
+					canvas#class-canvas
+				div.tab-pane#subclass-tab
+					canvas#subclass-canvas
+				svg(ng-show="getDisplayType()=='timeseries'")
+

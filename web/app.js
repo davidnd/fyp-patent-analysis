@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var models = require('./models');
 
 var routes = require('./routes/index');
+var timeseries = require('./routes/timeseries');
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/timeseries', timeseries);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
