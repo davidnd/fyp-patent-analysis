@@ -23,18 +23,35 @@
             $http.get('/timeseries/subclasses').then(function(data){
                 var res = data.data;
                 console.log(res.length);
-                //sorting data;
-                // for(var i = 0; i<res.length; i++){
-                //     res[i].values = res[i].values.sort(function(a,b){
-                //         if(a[0]<b[0])
-                //             return -1;
-                //         if(a[0]>b[0])
-                //             return 1;
-                //         return 0;
-                //     });
-                // }
                 Utils.normalizeChartData(res);
-                $scope.timedata = res;
+                $scope.timesubclass = res;
+            }, function(err){
+                console.log("Error loading time series data");
+            });
+
+            $http.get('/timeseries/classes').then(function(data){
+                var res = data.data;
+                console.log(res.length);
+                Utils.normalizeChartData(res);
+                $scope.timeclass = res;
+            }, function(err){
+                console.log("Error loading time series data");
+            });
+
+            $http.get('/timeseries/subsections').then(function(data){
+                var res = data.data;
+                console.log(res.length);
+                Utils.normalizeChartData(res);
+                $scope.timesubsection = res;
+            }, function(err){
+                console.log("Error loading time series data");
+            });
+
+            $http.get('/timeseries/sections').then(function(data){
+                var res = data.data;
+                console.log(res.length);
+                Utils.normalizeChartData(res);
+                $scope.timesection = res;
             }, function(err){
                 console.log("Error loading time series data");
             });
@@ -50,30 +67,7 @@
                 var ctx = document.getElementById("section-canvas").getContext("2d");
                 var chart = new Chart(ctx).Pie($scope.tabdata.sections);
             }else{
-                
-                nv.addGraph(function() {
-                  var chart = nv.models.stackedAreaChart()
-                  .x(function(d) { return d[0] })
-                  .y(function(d) { return d[1] })
-                  .clipEdge(true)
-                  .useInteractiveGuideline(true)
-                  ;
-
-                  chart.xAxis
-                  .showMaxMin(false)
-                  .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)) });
-
-                  chart.yAxis
-                  .tickFormat(d3.format(',.2f'));
-
-                  d3.select('#tab-div svg')
-                  .datum($scope.timedata)
-                  .transition().duration(500).call(chart);
-
-                  nv.utils.windowResize(chart.update);
-
-                  return chart;
-              });
+                $scope.showTimeSeriesChart($scope.timesection);
             }
         }
         $scope.showSubsection = function(){
@@ -83,6 +77,9 @@
                 var ctx = document.getElementById("subsec-canvas").getContext("2d");
                 var chart = new Chart(ctx).Pie($scope.tabdata.subsecs);
             }
+            else{
+                $scope.showTimeSeriesChart($scope.timesubsection);
+            }
         }
         $scope.showClass = function(){
             $("#tab-div>div.active").removeClass('active');
@@ -90,6 +87,9 @@
                 $("#class-tab").addClass('active');
                 var ctx = document.getElementById("class-canvas").getContext("2d");
                 var chart = new Chart(ctx).Pie($scope.tabdata.classes);
+            }
+            else{
+                $scope.showTimeSeriesChart($scope.timeclass);
             }
         }
         $scope.showSubclass = function(){
@@ -99,6 +99,32 @@
                 var ctx = document.getElementById("subclass-canvas").getContext("2d");
                 var chart = new Chart(ctx).Pie($scope.tabdata.subclasses);
             }
+            else{
+                $scope.showTimeSeriesChart($scope.timesubclass);
+            }
+        }
+        $scope.showTimeSeriesChart = function(data){
+            nv.addGraph(function() {
+                var chart = nv.models.stackedAreaChart()
+                    .x(function(d) { return d[0] })
+                    .y(function(d) { return d[1] })
+                    .clipEdge(true)
+                    .useInteractiveGuideline(true);
+
+                chart.xAxis
+                    .showMaxMin(false)
+                    .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)) });
+
+                chart.yAxis
+                  .tickFormat(d3.format(',.2f'));
+                d3.selectAll("svg > *").remove();
+                d3.select('#tab-div svg')
+                    .datum(data)
+                    .transition().duration(500).call(chart);
+                nv.utils.windowResize(chart.update);
+
+                return chart;
+            });
         }
     });
 
