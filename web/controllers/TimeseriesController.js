@@ -1,10 +1,12 @@
 var models = require('../models');
 exports.getSectionsTS = function (req, res) {
 	models.sequelize.query("SELECT\
-		subclassid, date\
+		subclassid, date, subclasses.description\
 		FROM patent.patents\
 		LEFT JOIN (patent.patentsubclass)\
 		ON patents.id = patentsubclass.patentid\
+		LEFT JOIN (patent.subclasses)\
+        ON subclasses.id = patentsubclass.subclassid\
 		WHERE subclassid IS NOT NULL AND subclassid IN (\
 			SELECT * FROM(\
 				SELECT id FROM patent.subclasses\
@@ -21,26 +23,46 @@ exports.getSectionsTS = function (req, res) {
 			obj.values = [];
 			for(var i=0; i<results.length; i++){
 				var row = results[i];
-				var date = new Date(row.date).getTime();
+				var description = row.description;
+				var date = row.date;
+				var year = date.getFullYear();
+				var month = ("0" + (date.getMonth() + 1)).slice(-2);
+				var date = year + '-' + month;
+				date = new Date(date).getTime();
 				if(lastid == null){
 					lastid = row.subclassid;
 					currentid = lastid;
-					obj.key = currentid;
-					obj.values.push(date);
-					data.push(obj);	
+					obj.key = description;
+					var point = [date, 1];
+					obj.values.push(point);
+					data.push(obj);
 				}
 				currentid = row.subclassid;
+				//new subclass
 				if(currentid != lastid){
 					obj = {};
 					obj.values = [];
 					lastid = currentid;
-					obj.key = lastid;
-					obj.values.push(date);
+					obj.key = description;
+					var point = [date, 1];
+					obj.values.push(point);
 					data.push(obj);
 				}else{
-					obj.values.push(date);
+					//same as latest subclass
+					for(var j=0; j<obj.values.length; j++){
+						var point = obj.values[j];
+						//time already in values
+						if(point[0] == date){
+							point[1]++;
+							break;
+						}
+					}
+					//new time, add a new point
+					if(j==obj.values.length){
+						var point = [date, 1];
+						obj.values.push(point);
+					}
 				}
-
 			}
 			res.send(data);
 		}).catch(function(err){
