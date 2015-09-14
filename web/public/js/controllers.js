@@ -20,7 +20,7 @@
             Subclass.query(function(subclasses){
                 $scope.tabdata.subclasses = Utils.generatePieChartData(subclasses);
             });
-            $http.get('/timeseries/sections').then(function(data){
+            $http.get('/timeseries/subclasses').then(function(data){
                 var res = data.data;
                 console.log(res.length);
                 //sorting data;

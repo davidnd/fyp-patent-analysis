@@ -14,12 +14,36 @@
             trimDescription: trimDescription
         };
         function generatePieChartData(data){
+            var colors = [
+                [0, 0, 255], //blue
+                [0, 0, 128], //navy
+                [0, 128, 0], //green
+                [255, 165, 0], // orange
+                [255, 0, 0], // red
+                [128, 0, 128], // purple
+                [128, 128, 0], //olive
+                [0, 255, 0], //lime
+                [128, 0, 0], //maroon
+                [0, 255, 255], //aqua
+                [0, 128, 128], //team
+                [255, 0, 255], //fushua
+                [128, 128, 128], //gray
+                [255, 255, 0] //yellow
+            ];
             var returneddata =[];
+            var colorindex;
             for(var i=0;i<data.length;i++){
-                r = Math.floor(Math.random() * 200);
-                g = Math.floor(Math.random() * 200);
-                b = Math.floor(Math.random() * 200);
-                v = Math.floor(Math.random() * 500);
+                var r, g, b, v;
+                if(i>=colors.length){
+                    r = Math.floor(Math.random() * 200);
+                    g = Math.floor(Math.random() * 200);
+                    b = Math.floor(Math.random() * 200);
+                    v = Math.floor(Math.random() * 500);
+                }else{
+                    r = colors[i][0];
+                    g = colors[i][1];
+                    b = colors[i][2];
+                }
                 c = 'rgb(' + r + ', ' + g + ', ' + b + ')';
                 h = 'rgb(' + (r+20) + ', ' + (g+20) + ', ' + (b+20) + ')';
                 var temp = {};
