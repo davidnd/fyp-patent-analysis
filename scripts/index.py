@@ -4,11 +4,12 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import utils, os
 
-filename = "ipg140107.xml"
+filename = "ipg130101.xml"
+start = True
+startpoint = "12854740"
 basedir = os.path.dirname(__file__)
 relpath = "../data"
 filepath = os.path.join(basedir, relpath, filename)
-
 engine = create_engine('mysql://root:root@localhost/patent')
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -26,7 +27,6 @@ for item in utils.xmlSplitter(open(filepath, 'r')):
     description = ""
     date = None
     cpccode = ""
-    print "Indexing doc num ", num;
     root = ET.fromstring(item)
     # get abstract
     abstract = utils.getElementText(root.find("abstract"))
@@ -46,8 +46,13 @@ for item in utils.xmlSplitter(open(filepath, 'r')):
     appref = list(root.iter("application-reference"))
     if(len(appref)):
         docnumber = list(appref[0].iter("doc-number"))
+        if(docnumber != startpoint and start == False):
+            continue
+        else:
+            start = True
         if(len(docnumber)):
             docnumber = docnumber[0].text
+            print "Indexing doc num ", num;
             print docnumber
             # print docnumber
         date = list(appref[0].iter('date'))
