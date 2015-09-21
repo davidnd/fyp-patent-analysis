@@ -1,5 +1,5 @@
 (function(){
-	angular.module('fyp').controller('IndexController', function($scope, Section, Subsection, Class, Subclass, Utils, $http){
+	angular.module('fyp').controller('IndexController', function($scope, $compile, Section, Subsection, Class, Subclass, Utils, $http){
         $scope.tabdata = {};
         $scope.timedata = [];
         $scope.svg;
@@ -54,7 +54,13 @@
         }
         $scope.getPiechartOption = function(){
             return {
-                legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+                legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\">\
+                                <% for (var i=0; i<segments.length; i++){%>\
+                                    <li>\
+                                        <span style=\"background-color:<%=segments[i].fillColor%>\"></span>\
+                                        <a href ng-click=\"getSectionDetails(<%=i+1%>)\"><%if(segments[i].label){%><%=segments[i].label%><%}%></a>\
+                                    </li><%}%>\
+                                </ul>"
             }
         }
         $scope.getDisplayType = function(){
@@ -65,8 +71,11 @@
             if($scope.getDisplayType() == "piechart"){
                 $("#section-tab").addClass('active');
                 var ctx = document.getElementById("section-canvas").getContext("2d");
-                var chart = new Chart(ctx).Pie($scope.tabdata.sections, $scope.getPiechartOption);
-                $('#section-legend').html(chart.generateLegend());
+                var chart = new Chart(ctx).Pie($scope.tabdata.sections, $scope.getPiechartOption());
+                var el = $('#section-legend');
+                el.html(chart.generateLegend()).show();
+                $compile(el.contents())($scope);
+
             }else{
                 $scope.showTimeSeriesChart($scope.timesection);
             }
@@ -125,6 +134,12 @@
                 nv.utils.windowResize(chart.update);
 
                 return chart;
+            });
+        }
+        $scope.getSectionDetails = function(id){
+            $http.get('/sections/details/' + id).then(function(results){
+                $scope.tabdata.sections = Utils.generatePieChartData(results.data);
+                $scope.showSection();
             });
         }
     });

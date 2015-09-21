@@ -104,7 +104,7 @@
         }
     });
     angular.module('fyp').factory('Section', function($resource){
-        return $resource('/sections');
+        return $resource('/sections/:id', {id: '@id'});
     });
     angular.module('fyp').factory('Subsection', function($resource){
     	return $resource('/subsections');

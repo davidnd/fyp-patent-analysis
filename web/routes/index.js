@@ -11,6 +11,6 @@ router.get('/subsections', IndexController.getSubsections);
 router.get('/classes', IndexController.getClasses);
 router.get('/subclasses', IndexController.getSubclasses);
 router.get('/patents', IndexController.getPatents);
-router.get('/sections/:id', IndexController.getSectionDetails);
+router.get('/sections/details/:id', IndexController.getSectionDetails);
 // router.get('/subsections/:id', IndexController.getSubsectionDetails);
 module.exports = router;
