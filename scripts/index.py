@@ -46,13 +46,13 @@ for item in utils.xmlSplitter(open(filepath, 'r')):
     appref = list(root.iter("application-reference"))
     if(len(appref)):
         docnumber = list(appref[0].iter("doc-number"))
-        if(docnumber != startpoint and start == False):
-            continue
-        else:
-            start = True
         if(len(docnumber)):
             docnumber = docnumber[0].text
-            print "Indexing doc num ", num;
+            if(docnumber != startpoint and start == False):
+                continue
+            else:
+                start = True
+                print "Indexing doc num ", num;
             print docnumber
             # print docnumber
         date = list(appref[0].iter('date'))

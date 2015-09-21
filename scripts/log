@@ -1,0 +1,26 @@
+convert unicode to string
+    pip install unidecode
+
+one to many relationship: assignee-patents
+
+many to many relationship: patents-inventors
+
+indexing with counts on ipa150312
+
+#Files index:
+ipa150319.xml all
+ipa150312.xml half
+ipa140102.xml almost done but majority is sept, fuck.....
+
+
+18/09
+-Just realize that i need to extract from grants, not application
+- Will store all patents without cpc codes, for later uses
+- run the latest file of patent grant: ipg150317.xml
+20/9
+- done with ipg150317
+- done with ipg150310
+- ipg140107 done
+- ipg130101 done
+
+

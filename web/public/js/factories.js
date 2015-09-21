@@ -56,12 +56,13 @@
             return returneddata;
         };
         function normalizeChartData(data){
+            var startingDate = 1199145600000;
             var timeArray = [];
             for(var i = 0; i<data.length; i++){
                 var values = data[i].values;
                 for(var j = 0; j<values.length; j++){
                     var point = values[j];
-                    if(timeArray.indexOf(point[0])>-1){
+                    if(timeArray.indexOf(point[0])>-1 || parseInt(point[0]) < startingDate){
                         continue;
                     }
                     timeArray.push(point[0]);
