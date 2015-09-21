@@ -2,16 +2,23 @@ from model import Assignee, Inventor, Patent, Subclass
 import xml.etree.ElementTree as ET
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-import utils
+import utils, os
 
-filename = "ipa150312.xml"
+filename = "ipg140107.xml"
+basedir = os.path.dirname(__file__)
+relpath = "../data"
+filepath = os.path.join(basedir, relpath, filename)
 
 engine = create_engine('mysql://root:root@localhost/patent')
 Session = sessionmaker(bind=engine)
 session = Session()
 
+def updatemissingsubclass(e):
+    f = open('missingsubclass.txt', 'a')
+    f.write(e + "\n")
+    f.close()
 num = 0
-for item in utils.xmlSplitter(open(filename, 'r')):
+for item in utils.xmlSplitter(open(filepath, 'r')):
     docnumber = ""
     abstract = ""
     claimstext = ""
@@ -71,6 +78,9 @@ for item in utils.xmlSplitter(open(filename, 'r')):
         for code in cpccodes:
             subclass = session.query(Subclass).filter(Subclass.symbol == code).first()
             # add sublcass for patent
+            if(subclass is None):
+                updatemissingsubclass(code)
+                continue;
             patent.subclasses.append(subclass)
             subclass.count+=1
             session.add(subclass)

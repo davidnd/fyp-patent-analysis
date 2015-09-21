@@ -22,7 +22,6 @@
             });
             $http.get('/timeseries/subclasses').then(function(data){
                 var res = data.data;
-                console.log(res.length);
                 Utils.normalizeChartData(res);
                 $scope.timesubclass = res;
             }, function(err){
@@ -31,7 +30,6 @@
 
             $http.get('/timeseries/classes').then(function(data){
                 var res = data.data;
-                console.log(res.length);
                 Utils.normalizeChartData(res);
                 $scope.timeclass = res;
             }, function(err){
@@ -40,7 +38,6 @@
 
             $http.get('/timeseries/subsections').then(function(data){
                 var res = data.data;
-                console.log(res.length);
                 Utils.normalizeChartData(res);
                 $scope.timesubsection = res;
             }, function(err){
@@ -49,17 +46,17 @@
 
             $http.get('/timeseries/sections').then(function(data){
                 var res = data.data;
-                console.log(res.length);
                 Utils.normalizeChartData(res);
-                for(var i=0; i<res.length; i++){
-                    console.log(res[i].values.length);
-                }
                 $scope.timesection = res;
             }, function(err){
                 console.log("Error loading time series data");
             });
         }
-        
+        $scope.getPiechartOption = function(){
+            return {
+                legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><div class=\"box\" style=\"background-color:<%=segments[i].fillColor%>\"/><%if(segments[i].label){%><div class=\"text\"><%=segments[i].label%></div><%}%></li><%}%></ul>"
+            }
+        }
         $scope.getDisplayType = function(){
             return Utils.getDisplayType();
         }
@@ -68,7 +65,8 @@
             if($scope.getDisplayType() == "piechart"){
                 $("#section-tab").addClass('active');
                 var ctx = document.getElementById("section-canvas").getContext("2d");
-                var chart = new Chart(ctx).Pie($scope.tabdata.sections);
+                var chart = new Chart(ctx).Pie($scope.tabdata.sections, $scope.getPiechartOption);
+                $('#section-legend').html(chart.generateLegend());
             }else{
                 $scope.showTimeSeriesChart($scope.timesection);
             }

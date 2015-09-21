@@ -10,8 +10,12 @@ def xmlSplitter(data, separator = lambda x: x.startswith("<?xml")):
     yield ''.join(buff)
 
 docno = "14394189"
+filename = "ipg150310.xml"
+basedir = os.path.dirname(__file__)
+relpath = "../data"
+filepath = os.path.join(basedir, relpath, filename)
 
-for item in xmlSplitter(open('data.xml', 'r')):
+for item in xmlSplitter(open(filepath, 'r')):
     root = ET.fromstring(item)
     export = open('extract.xml', 'w+')
     appref = list(root.iter("application-reference"))
