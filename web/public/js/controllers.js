@@ -51,6 +51,9 @@
                 var res = data.data;
                 console.log(res.length);
                 Utils.normalizeChartData(res);
+                for(var i=0; i<res.length; i++){
+                    console.log(res[i].values.length);
+                }
                 $scope.timesection = res;
             }, function(err){
                 console.log("Error loading time series data");

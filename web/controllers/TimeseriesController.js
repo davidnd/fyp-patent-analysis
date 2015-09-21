@@ -69,7 +69,7 @@ exports.getSubclassTS = function (req, res) {
 				ORDER BY count\
 				DESC LIMIT 10\
 				) AS temp\
-		)"
+		) order by subclassid"
 		,{type: models.sequelize.QueryTypes.SELECT}
 		).then(function(results){
 			console.log(results.length);

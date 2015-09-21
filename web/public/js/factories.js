@@ -57,6 +57,7 @@
         };
         function normalizeChartData(data){
             var timeArray = [];
+            console.log(typeof data[0].values[0],  typeof data[0].values[1]);
             for(var i = 0; i<data.length; i++){
                 var values = data[i].values;
                 for(var j = 0; j<values.length; j++){
@@ -67,7 +68,9 @@
                     timeArray.push(point[0]);
                 }
             }
-            timeArray = timeArray.sort();
+            timeArray = timeArray.sort(function(x, y){
+                return parseInt(x) - parseInt(y); 
+            });
             for(var k=0; k<data.length; k++){
                 data[k].key = trimDescription(data[k].key);
                 var values = data[k].values;

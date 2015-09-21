@@ -21,13 +21,13 @@ block content
 				li#subclasstab
 					a.tablink(href='#tab4', data-toggle='tab', ng-click="showSubclass()") Subclasses	
 			div.tab-content#tab-div
-				div.tab-pane#section-tab.active
+				div.tab-pane#section-tab.active(ng-hide="getDisplayType()=='timeseries'")
 					canvas#section-canvas
-				div.tab-pane#subsec-tab
+				div.tab-pane#subsec-tab(ng-hide="getDisplayType()=='timeseries'")
 					canvas#subsec-canvas
-				div.tab-pane#class-tab
+				div.tab-pane#class-tab(ng-hide="getDisplayType()=='timeseries'")
 					canvas#class-canvas
-				div.tab-pane#subclass-tab
+				div.tab-pane#subclass-tab(ng-hide="getDisplayType()=='timeseries'")
 					canvas#subclass-canvas
 				svg(ng-show="getDisplayType()=='timeseries'")
 
