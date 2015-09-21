@@ -57,7 +57,6 @@
         };
         function normalizeChartData(data){
             var timeArray = [];
-            console.log(typeof data[0].values[0],  typeof data[0].values[1]);
             for(var i = 0; i<data.length; i++){
                 var values = data[i].values;
                 for(var j = 0; j<values.length; j++){

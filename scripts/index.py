@@ -59,6 +59,11 @@ for item in utils.xmlSplitter(open(filepath, 'r')):
         print "Patent already indexed, move to next one"
         continue
     cpcnodes = list(root.iter("classification-cpc"))
+    if(len(cpcnodes) == 0):
+        cpcnodes = list(root.iter("classification-ipcr"))
+        if(len(cpcnodes) == 0):
+            print "This patent does not have cpc codes"
+            continue
     # get classification code
     for cpc in cpcnodes:
         section = cpc.find("section").text

@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+import os, sys
 def xmlSplitter(data, separator = lambda x: x.startswith("<?xml")):
     buff = []
     for line in data:
@@ -9,8 +10,8 @@ def xmlSplitter(data, separator = lambda x: x.startswith("<?xml")):
         buff.append(line)
     yield ''.join(buff)
 
-docno = "14394189"
-filename = "ipg150310.xml"
+docno = "12929344"
+filename = "ipg140107.xml"
 basedir = os.path.dirname(__file__)
 relpath = "../data"
 filepath = os.path.join(basedir, relpath, filename)
@@ -25,4 +26,6 @@ for item in xmlSplitter(open(filepath, 'r')):
             docnumber = docnumber[0].text
             if(docnumber == docno):
                 export.write(item)
-                break
+                print 'Found!'
+                sys.exit()
+print "Not found"
