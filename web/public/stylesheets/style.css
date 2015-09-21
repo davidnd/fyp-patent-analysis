@@ -16,3 +16,9 @@ canvas{
 #tab-div svg{
 	height: 700px;
 }
+.pie-legend li span {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    margin-right: 5px;
+}

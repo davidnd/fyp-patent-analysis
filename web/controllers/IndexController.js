@@ -10,6 +10,22 @@ exports.getSections = function(req, res, next){
     	});
 	});
 };
+
+exports.getSectionDetails = function(req, res) {
+	var sectionId = req.params.id;
+	models.sequelize.query("SELECT subclasses.description, subclasses.count FROM patent.subclasses\
+	left join patent.classes on classes.id = subclasses.class_id\
+	left join patent.subsections on subsections.id = classes.subsection_id\
+	left join patent.sections on subsections.section_id = sections.id\
+	where sections.id = " + sectionId + 
+	" order by subclasses.count desc limit 10;", {type: models.sequelize.QueryTypes.SELECT})
+	.then(function(result){
+		res.send(result);
+	}).catch(function(err) {
+		res.sendStatus(500);
+	});
+};
+
 exports.getSubsections = function(req, res, next){
 	models.Subsection.findAll({
 		order: [
