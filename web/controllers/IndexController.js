@@ -25,7 +25,20 @@ exports.getSectionDetails = function(req, res) {
 		res.sendStatus(500);
 	});
 };
-
+exports.getClassDetails = function(req, res) {
+	var classId = req.params.id;
+	models.sequelize.query("SELECT subclasses.description, subclasses.count, subclasses.id\
+		FROM patent.subclasses\
+		LEFT JOIN patent.classes on classes.id = subclasses.class_id\
+		WHERE classes.id = " + classId +
+		" ORDER BY subclasses.count desc limit 10;", {type: models.sequelize.QueryTypes.SELECT})
+	.then(function(results) {
+		res.send(results);
+	}).catch(function(err){
+		console.log("GET class details failed");
+		res.sendStatus(500);
+	});
+}
 exports.getSubsections = function(req, res, next){
 	models.Subsection.findAll({
 		order: [

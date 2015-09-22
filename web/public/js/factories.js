@@ -104,13 +104,19 @@
         }
     });
     angular.module('fyp').factory('Section', function($resource){
-        return $resource('/sections/:id', {id: '@id'});
+        return $resource('/sections/:id', {}, 
+        {
+            getDrillDown: { method: 'GET', params: {id: '@id'}, isArray:true}
+        });
     });
     angular.module('fyp').factory('Subsection', function($resource){
     	return $resource('/subsections');
     });
     angular.module('fyp').factory('Class', function($resource){
-        return $resource('/classes');
+        return $resource('/classes/:id', {},
+            {
+                getDrillDown: { method: 'GET', params: {id: '@id'}, isArray: true}
+            });
     });
     angular.module('fyp').factory('Subclass', function($resource){
         return $resource('/subclasses');

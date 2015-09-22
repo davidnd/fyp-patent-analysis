@@ -22,11 +22,9 @@ block content
 						li
 							a(href ng-click="setCpcLevel('Sections')") By sections
 						li
-							a(href ng-click="setCpcLevel('Sub-sections')") By sub-sections
-						li
 							a(href ng-click="setCpcLevel('Classes')") By classes
 						li 
-							a(href ng-click="setCpcLevel('Sublcasses')") By sub-classes
+							a(href ng-click="setCpcLevel('Subclasses')") By sub-classes
 
 		div#pie-chart(ng-controller='PieChartController', ng-show="getChartType()=='Pie Chart'")
 		div#line-chart(ng-controller='LineChartController', ng-show="getChartType()=='Time-series'")
