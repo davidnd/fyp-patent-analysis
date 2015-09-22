@@ -3,6 +3,11 @@
         $scope.tabdata = {};
         $scope.timedata = [];
         $scope.svg;
+        angular.element(document).ready(function(){
+            $scope.pieChartContext = document.getElementById("piechart-canvas").getContext("2d");
+            $scope.legendElement = $('#piechart-legend');
+        });
+        $scope.piechart;
         activate();
 
         function activate(){
@@ -67,47 +72,43 @@
             return Utils.getDisplayType();
         }
         $scope.showSection = function(){
-            $("#tab-div>div.active").removeClass('active');
             if($scope.getDisplayType() == "piechart"){
-                $("#section-tab").addClass('active');
-                var ctx = document.getElementById("section-canvas").getContext("2d");
-                var chart = new Chart(ctx).Pie($scope.tabdata.sections, $scope.getPiechartOption());
-                var el = $('#section-legend');
-                el.html(chart.generateLegend()).show();
+                if(typeof $scope.piechart !='undefined'){
+                    $scope.piechart.destroy();
+                }
+                $scope.piechart = new Chart($scope.pieChartContext).Pie($scope.tabdata.sections, $scope.getPiechartOption());
+                var el = $('#piechart-legend');
+                el.html($scope.piechart.generateLegend()).show();
                 $compile(el.contents())($scope);
-
             }else{
                 $scope.showTimeSeriesChart($scope.timesection);
             }
         }
         $scope.showSubsection = function(){
-            $("#tab-div>div.active").removeClass('active');
             if($scope.getDisplayType() == "piechart"){
-                $("#subsec-tab").addClass('active');
-                var ctx = document.getElementById("subsec-canvas").getContext("2d");
-                var chart = new Chart(ctx).Pie($scope.tabdata.subsecs);
+                $scope.piechart.destroy();
+                $scope.piechart = new Chart($scope.pieChartContext).Pie($scope.tabdata.subsecs);
+                $scope.legendElement.html($scope.piechart.generateLegend()).show();
             }
             else{
                 $scope.showTimeSeriesChart($scope.timesubsection);
             }
         }
         $scope.showClass = function(){
-            $("#tab-div>div.active").removeClass('active');
             if($scope.getDisplayType() == "piechart"){
-                $("#class-tab").addClass('active');
-                var ctx = document.getElementById("class-canvas").getContext("2d");
-                var chart = new Chart(ctx).Pie($scope.tabdata.classes);
+                $scope.piechart.destroy();
+                $scope.piechart = new Chart($scope.pieChartContext).Pie($scope.tabdata.classes);
+                $scope.legendElement.html($scope.piechart.generateLegend()).show();
             }
             else{
                 $scope.showTimeSeriesChart($scope.timeclass);
             }
         }
         $scope.showSubclass = function(){
-            $("#tab-div>div.active").removeClass('active');
             if($scope.getDisplayType() == "piechart"){
-                $("#subclass-tab").addClass('active');
-                var ctx = document.getElementById("subclass-canvas").getContext("2d");
-                var chart = new Chart(ctx).Pie($scope.tabdata.subclasses);
+                $scope.piechart.destroy();
+                $scope.piechart = new Chart($scope.pieChartContext).Pie($scope.tabdata.subclasses);
+                $scope.legendElement.html($scope.piechart.generateLegend()).show();
             }
             else{
                 $scope.showTimeSeriesChart($scope.timesubclass);
@@ -128,7 +129,7 @@
                 chart.yAxis
                   .tickFormat(d3.format(',.2f'));
                 d3.selectAll("svg > *").remove();
-                d3.select('#tab-div svg')
+                d3.select('#time-series svg')
                     .datum(data)
                     .transition().duration(500).call(chart);
                 nv.utils.windowResize(chart.update);
@@ -138,8 +139,11 @@
         }
         $scope.getSectionDetails = function(id){
             $http.get('/sections/details/' + id).then(function(results){
-                $scope.tabdata.sections = Utils.generatePieChartData(results.data);
-                $scope.showSection();
+                $scope.tabdata.sectionDetails = Utils.generatePieChartData(results.data);
+                $scope.piechart.destroy();
+                $scope.piechart = new Chart($scope.pieChartContext).Pie($scope.tabdata.sectionDetails);
+                var el = $('#piechart-legend');
+                el.html($scope.piechart.generateLegend()).show(); 
             });
         }
     });

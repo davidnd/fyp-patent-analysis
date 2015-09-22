@@ -1,5 +1,4 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 canvas{
@@ -13,7 +12,7 @@ canvas{
 	margin-right: auto;
 	float: none;
 }
-#tab-div svg{
+#time-series svg{
 	height: 700px;
 }
 .pie-legend li span {

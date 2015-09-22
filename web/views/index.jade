@@ -19,16 +19,12 @@ block content
 				li#classtab
 					a.tablink(href='#tab3', data-toggle='tab', ng-click="showClass()") Classes
 				li#subclasstab
-					a.tablink(href='#tab4', data-toggle='tab', ng-click="showSubclass()") Subclasses	
-			div.tab-content#tab-div
-				div.tab-pane#section-tab.active(ng-hide="getDisplayType()=='timeseries'")
-					canvas#section-canvas
-					div#section-legend
-				div.tab-pane#subsec-tab(ng-hide="getDisplayType()=='timeseries'")
-					canvas#subsec-canvas
-				div.tab-pane#class-tab(ng-hide="getDisplayType()=='timeseries'")
-					canvas#class-canvas
-				div.tab-pane#subclass-tab(ng-hide="getDisplayType()=='timeseries'")
-					canvas#subclass-canvas
+					a.tablink(href='#tab4', data-toggle='tab', ng-click="showSubclass()") Subclasses
+			div.row(ng-hide="getDisplayType()=='timeseries'")
+				div.col-md-9
+					canvas#piechart-canvas
+				div.col-md-3
+					div#piechart-legend
+			div#time-series 
 				svg(ng-show="getDisplayType()=='timeseries'")
 
