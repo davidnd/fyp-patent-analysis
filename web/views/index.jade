@@ -2,29 +2,34 @@ extends layout
 
 block content
 	div.container-fluid(ng-app="fyp")
-		div.graph-radio(ng-controller='RadioController')
-			label.radio-inline
-				input(type='radio', name='graphtype', id='pie-chart', ng-model = "value", value = "piechart", ng-change="setType(value)", ng-checked='true') 
-				| Pie Chart
-			label.radio-inline
-				input(type='radio', name='graphtype', id='time-series', ng-model='value', value='timeseries', ng-change="setType(value)") 
-				| Time Series
+		div.header-options.row(ng-controller='ButtonController')
+			div.col-sm-2
+				div.btn-group.btn-block.filter-btn
+					button.btn.btn-success.col-sm-10(type='button') {{getChartType()}}
+					button.btn.btn-success.dropdown-toggle.col-sm-2(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+						span.caret
+					ul.dropdown-menu
+						li
+							a(href ng-click="setChartType('Pie Chart')") Pie Chart
+						li
+							a(href ng-click="setChartType('Time-series')") Time-series
+			div.col-sm-2
+				div.btn-group.btn-block.filter-btn
+					button.btn.btn-success.col-sm-10(type='button') {{getCpcLevel()}}
+					button.btn.btn-success.dropdown-toggle.col-sm-2(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+						span.caret
+					ul.dropdown-menu
+						li
+							a(href ng-click="setCpcLevel('Sections')") By sections
+						li
+							a(href ng-click="setCpcLevel('Sub-sections')") By sub-sections
+						li
+							a(href ng-click="setCpcLevel('Classes')") By classes
+						li 
+							a(href ng-click="setCpcLevel('Sublcasses')") By sub-classes
 
-		div(ng-controller='IndexController')
-			ul.nav.nav-tabs.nav-justified
-				li#sectiontab.active
-					a.tablink(href='#tab1', data-toggle='tab', ng-click="showSection()") Sections
-				li#subsectab
-					a.tablink(href='#tab2', data-toggle='tab', ng-click="showSubsection()") Subsections
-				li#classtab
-					a.tablink(href='#tab3', data-toggle='tab', ng-click="showClass()") Classes
-				li#subclasstab
-					a.tablink(href='#tab4', data-toggle='tab', ng-click="showSubclass()") Subclasses
-			div.row(ng-hide="getDisplayType()=='timeseries'")
-				div.col-md-9
-					canvas#piechart-canvas
-				div.col-md-3
-					div#piechart-legend
-			div#time-series 
-				svg(ng-show="getDisplayType()=='timeseries'")
+		div#pie-chart(ng-controller='PieChartController', ng-show="getChartType()=='Pie Chart'")
+		div#line-chart(ng-controller='LineChartController', ng-show="getChartType()=='Time-series'")
+			
+
 

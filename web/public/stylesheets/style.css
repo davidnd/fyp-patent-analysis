@@ -1,19 +1,24 @@
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+.dropdown-menu{
+    width: 100%;
+}
 canvas{
 	width: 100%;
 	height: 100%;
 	margin: 0;
 }
-.graph-radio{
-	margin-bottom: 50px;
-	margin-left: auto;
-	margin-right: auto;
-	float: none;
+.filter-btn{
+    margin: 20px;
 }
 #time-series svg{
 	height: 700px;
+}
+
+#pie-chart{
+    width: 100%;
+    height: 600px;
 }
 .pie-legend li span {
     width: 1em;
