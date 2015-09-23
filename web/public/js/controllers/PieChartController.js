@@ -58,7 +58,16 @@
             });
         }
         $scope.$watch(function(){return ChartServices.getCpcLevel();}, function(newVal){
-            console.log(newVal);
+            if($scope.getChartType() != "Pie Chart"){
+                return;
+            }
+            else displayChart(newVal);
+        }, true);
+        $scope.$watch(function(){return ChartServices.getChartType();}, function(newVal){
+            if(newVal == "Pie Chart")
+                displayChart($scope.getChartType());
+        });
+        function displayChart(newVal){
             if(newVal == "Classes"){
                 $scope.showClass();
             }
@@ -67,7 +76,8 @@
             }
             else if(newVal = "Section")
                 $scope.showSection();
-        }, true);
+        }
+
         $scope.showClass = function() {
             $scope.piechart = new Highcharts.Chart({
                 chart:{

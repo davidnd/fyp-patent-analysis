@@ -27,7 +27,8 @@ block content
 							a(href ng-click="setCpcLevel('Subclasses')") By sub-classes
 
 		div#pie-chart(ng-controller='PieChartController', ng-show="getChartType()=='Pie Chart'")
-		div#line-chart(ng-controller='LineChartController', ng-show="getChartType()=='Time-series'")
+		div#time-series(ng-controller='StackedAreaChartController')
+			svg(ng-show="getChartType()=='Time-series'")
 			
 
 
