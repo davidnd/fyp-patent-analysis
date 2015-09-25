@@ -1,6 +1,5 @@
 (function() {
     angular.module('fyp').controller('StackedAreaChartController', function($scope, ChartServices, Utils, $http){
-        getData();
         $scope.getChartType = function(){
             return ChartServices.getChartType();
         }
@@ -49,40 +48,15 @@
         }
 
         $scope.showSection = function(){
-            $scope.showTimeSeriesChart($scope.sectionData);
+            $scope.showTimeSeriesChart(ChartServices.timeseriesData().sectionData);
         }
 
         $scope.showClass = function(){
-            $scope.showTimeSeriesChart($scope.classData);
+            $scope.showTimeSeriesChart(ChartServices.timeseriesData().classData);
         }
 
         $scope.showSubclass = function(){
-            $scope.showTimeSeriesChart($scope.subclassData);
-        }
-        function getData(){
-            $http.get('/timeseries/subclasses').then(function(data){
-                var res = data.data;
-                Utils.normalizeChartData(res);
-                $scope.subclassData = res;
-            }, function(err){
-                console.log("Error loading time series data");
-            });
-
-            $http.get('/timeseries/classes').then(function(data){
-                var res = data.data;
-                Utils.normalizeChartData(res);
-                $scope.classData = res;
-            }, function(err){
-                console.log("Error loading time series data");
-            });
-
-            $http.get('/timeseries/sections').then(function(data){
-                var res = data.data;
-                Utils.normalizeChartData(res);
-                $scope.sectionData = res;
-            }, function(err){
-                console.log("Error loading time series data");
-            });
+            $scope.showTimeSeriesChart(ChartServices.timeseriesData().subclassData);
         }
     });
 })();

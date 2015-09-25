@@ -2,6 +2,8 @@
     angular.module('fyp').factory('ChartServices', function($http, Utils, $q){
         var chartType = "Pie Chart";
         var cpcLevel = "Sections";
+        var timeseriesData = {};
+        getTimeSeriesData();
         return {
             getChartType: function(){
                 return chartType;
@@ -16,7 +18,10 @@
                 cpcLevel = argument;
             }, 
             generatePieChartData: generatePieChartData,
-            generateDrillDownData: generateDrillDownData
+            generateDrillDownData: generateDrillDownData,
+            timeseriesData: function(){
+                return timeseriesData;
+            }
         }
         function generatePieChartData(data, name, drilldown){
             var pieData = [];
@@ -61,6 +66,31 @@
             });
             $q.all(promises).then(function() {
                 callback(drillDownData);
+            });
+        }
+        function getTimeSeriesData(){
+            $http.get('/timeseries/subclasses').then(function(data){
+                var res = data.data;
+                Utils.normalizeChartData(res);
+                timeseriesData.subclassData = res;
+            }, function(err){
+                console.log("Error loading time series data");
+            });
+
+            $http.get('/timeseries/classes').then(function(data){
+                var res = data.data;
+                Utils.normalizeChartData(res);
+                timeseriesData.classData = res;
+            }, function(err){
+                console.log("Error loading time series data");
+            });
+
+            $http.get('/timeseries/sections').then(function(data){
+                var res = data.data;
+                Utils.normalizeChartData(res);
+                timeseriesData.sectionData = res;
+            }, function(err){
+                console.log("Error loading time series data");
             });
         }
     });
