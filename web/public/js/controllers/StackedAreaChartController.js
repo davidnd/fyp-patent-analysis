@@ -48,15 +48,24 @@
         }
 
         $scope.showSection = function(){
-            $scope.showTimeSeriesChart(ChartServices.timeseriesData().sectionData);
+            if(typeof $scope.sectionData == 'undefined'){
+                $scope.sectionData = ChartServices.processStackedAreaChartData(ChartServices.timeseriesData().sectionData);
+            }
+            $scope.showTimeSeriesChart($scope.sectionData);
         }
 
         $scope.showClass = function(){
-            $scope.showTimeSeriesChart(ChartServices.timeseriesData().classData);
+            if(typeof $scope.classData == 'undefined'){
+                $scope.classData = ChartServices.processStackedAreaChartData(ChartServices.timeseriesData().classData);
+            }
+            $scope.showTimeSeriesChart($scope.classData);
         }
 
         $scope.showSubclass = function(){
-            $scope.showTimeSeriesChart(ChartServices.timeseriesData().subclassData);
+            if(typeof $scope.subclassData == 'undefined'){
+                $scope.subclassData = ChartServices.processStackedAreaChartData(ChartServices.timeseriesData().subclassData);
+            }
+            $scope.showTimeSeriesChart($scope.subclassData);
         }
     });
 })();

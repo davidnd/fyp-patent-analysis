@@ -21,7 +21,8 @@
             generateDrillDownData: generateDrillDownData,
             timeseriesData: function(){
                 return timeseriesData;
-            }
+            }, 
+            processStackedAreaChartData: processStackedAreaChartData
         }
         function generatePieChartData(data, name, drilldown){
             var pieData = [];
@@ -71,7 +72,6 @@
         function getTimeSeriesData(){
             $http.get('/timeseries/subclasses').then(function(data){
                 var res = data.data;
-                Utils.normalizeChartData(res);
                 timeseriesData.subclassData = res;
             }, function(err){
                 console.log("Error loading time series data");
@@ -79,7 +79,6 @@
 
             $http.get('/timeseries/classes').then(function(data){
                 var res = data.data;
-                Utils.normalizeChartData(res);
                 timeseriesData.classData = res;
             }, function(err){
                 console.log("Error loading time series data");
@@ -87,11 +86,58 @@
 
             $http.get('/timeseries/sections').then(function(data){
                 var res = data.data;
-                Utils.normalizeChartData(res);
                 timeseriesData.sectionData = res;
             }, function(err){
                 console.log("Error loading time series data");
             });
+        }
+        function processStackedAreaChartData(data){
+            var startingDate = 1199145600000;
+            var timeArray = [];
+            var results = [];
+            for(var i = 0; i<data.length; i++){
+                var values = data[i].values;
+                for(var j = 0; j<values.length; j++){
+                    var point = values[j];
+                    if(timeArray.indexOf(point[0])>-1 || parseInt(point[0]) < startingDate){
+                        continue;
+                    }
+                    timeArray.push(point[0]);
+                }
+            }
+            timeArray = timeArray.sort(function(x, y){
+                return parseInt(x) - parseInt(y); 
+            });
+            for(var k=0; k<data.length; k++){
+                var object = {};
+                object.key = Utils.trimDescription(data[k].key);
+                var values = data[k].values;
+                var normalizedValues = [];
+                for(var j=0; j<timeArray.length; j++){
+                    var checker = checkTimeInValues(timeArray[j], values);
+                    if(checker.result){
+                        normalizedValues.push([timeArray[j], values[checker.index][1]]);
+                    }else{
+                        normalizedValues.push([timeArray[j], 0]);
+                    }
+                }
+                object.values = normalizedValues;
+                results.push(object);
+            }
+            return results;
+        };
+        function checkTimeInValues(time, values){
+            for(var i=0; i<values.length;i++){
+                var point = values[i];
+                if(point[0]==time){
+                    return {result: true, index: i};
+                }
+            }
+            return {result:false, index: -1};
+        };
+
+        function processLineChartData(data){
+            
         }
     });
 })();
