@@ -27,36 +27,6 @@
         $scope.getChartType = function() {
             return ChartServices.getChartType();
         }
-        $scope.showSection = function(){
-            $scope.piechart = new Highcharts.Chart({
-                chart:{
-                    renderTo: 'pie-chart',
-                    type: 'pie'
-                },
-                title:{
-                    text: 'Patents grouped by sections'
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: false
-                        },
-                        showInLegend: true
-                    }
-                    // series: {
-                    //     dataLabels: {
-                    //         enabled: true
-                    //     }
-                    // }
-                },
-                series: [$scope.sectionData],
-                drilldown:{
-                    series: $scope.sectionDrillDownData
-                }
-            });
-        }
         $scope.$watch(function(){return ChartServices.getCpcLevel();}, function(newVal){
             if($scope.getChartType() == "Pie Chart"){
                 displayChart(newVal);
@@ -76,15 +46,14 @@
             else if(newVal = "Section")
                 $scope.showSection();
         }
-
-        $scope.showClass = function() {
+        function insertChart (data, drilldown, title) {
             $scope.piechart = new Highcharts.Chart({
                 chart:{
                     renderTo: 'pie-chart',
                     type: 'pie'
                 },
                 title:{
-                    text: 'Patents grouped by classes'
+                    text: 'Patents grouped by ' + title
                 },
                 plotOptions: {
                     pie: {
@@ -96,33 +65,20 @@
                         showInLegend: true
                     }
                 },
-                series: [$scope.classData],
+                series: [data],
                 drilldown: {
-                    series: $scope.classDrillDownData
+                    series: drilldown
                 }
             });
         }
+        $scope.showSection = function(){
+            insertChart($scope.sectionData, $scope.sectionDrillDownData, 'sections');
+        }
+        $scope.showClass = function() {
+            insertChart($scope.classData, $scope.classDrillDownData, "classes");
+        }
         $scope.showSubclass = function(){
-            $scope.piechart = new Highcharts.Chart({
-                chart:{
-                    renderTo: 'pie-chart',
-                    type: 'pie'
-                },
-                title:{
-                    text: 'Patents grouped by sub-classes'
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: false
-                        },
-                        showInLegend: true
-                    }
-                },
-                series: [$scope.subclassData]
-            });
+            insertChart($scope.subclassData, null, "sub-classes");
         }
 
     });
