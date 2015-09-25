@@ -22,7 +22,8 @@
             timeseriesData: function(){
                 return timeseriesData;
             }, 
-            processStackedAreaChartData: processStackedAreaChartData
+            processStackedAreaChartData: processStackedAreaChartData,
+            processLineChartData: processLineChartData
         }
         function generatePieChartData(data, name, drilldown){
             var pieData = [];
@@ -137,7 +138,25 @@
         };
 
         function processLineChartData(data){
-            
+            var startingDate = 1199145600000;
+            var results = [];
+            for(var i=0; i<data.length; i++){
+                var object = {};
+                var objectData = [];
+                object.name = Utils.trimDescription(data[i].key);
+                for(var j=0; j<data[i].values.length; j++){
+                    var temp = data[i].values[j];
+                    if(temp[0] > startingDate)
+                        objectData.push([temp[0], temp[1]]);
+                }
+                objectData = objectData.sort(function(x, y){
+                    return parseInt(x[0]) - parseInt(y[0]);
+                });
+                object.data = objectData;
+                results.push(object);
+            }
+            return results;
         }
+
     });
 })();

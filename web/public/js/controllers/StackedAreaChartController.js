@@ -4,14 +4,13 @@
             return ChartServices.getChartType();
         }
         $scope.$watch(function(){return ChartServices.getCpcLevel();}, function(newVal){
-            if($scope.getChartType() != "Time-series"){
-                return;
+            if($scope.getChartType() == "Time-series"){
+                displayChart(newVal);
             }
-            else displayChart(newVal);
         }, true);
         $scope.$watch(function(){return ChartServices.getChartType();}, function(newVal){
             if(newVal == "Time-series")
-                displayChart($scope.getChartType());
+                displayChart(ChartServices.getCpcLevel());
         });
         function displayChart(newVal){
             if(newVal == "Classes"){

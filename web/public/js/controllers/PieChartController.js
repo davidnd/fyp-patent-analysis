@@ -58,14 +58,13 @@
             });
         }
         $scope.$watch(function(){return ChartServices.getCpcLevel();}, function(newVal){
-            if($scope.getChartType() != "Pie Chart"){
-                return;
+            if($scope.getChartType() == "Pie Chart"){
+                displayChart(newVal);
             }
-            else displayChart(newVal);
         }, true);
         $scope.$watch(function(){return ChartServices.getChartType();}, function(newVal){
             if(newVal == "Pie Chart")
-                displayChart($scope.getChartType());
+                displayChart(ChartServices.getCpcLevel());
         });
         function displayChart(newVal){
             if(newVal == "Classes"){
