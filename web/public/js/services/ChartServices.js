@@ -93,7 +93,8 @@
             });
         }
         function processStackedAreaChartData(data){
-            var startingDate = 1199145600000;
+            var startingDate = new Date("Jan-01-2005").getTime();
+            // var startingDate = 1072915200000;
             var timeArray = [];
             var results = [];
             for(var i = 0; i<data.length; i++){
@@ -138,7 +139,7 @@
         };
 
         function processLineChartData(data){
-            var startingDate = 1199145600000;
+            var startingDate = new Date("Jan-01-2005").getTime();
             var results = [];
             for(var i=0; i<data.length; i++){
                 var object = {};
@@ -146,17 +147,37 @@
                 object.name = Utils.trimDescription(data[i].key);
                 for(var j=0; j<data[i].values.length; j++){
                     var temp = data[i].values[j];
-                    if(temp[0] > startingDate)
-                        objectData.push([temp[0], temp[1]]);
+                    var year = new Date(temp[0]).getFullYear();
+                    year = year + '-' + '12' + '-' + '31';
+                    var newDate = new Date(year).getTime();
+                    if(newDate > startingDate)
+                        objectData.push([newDate, temp[1]]);
                 }
                 objectData = objectData.sort(function(x, y){
                     return parseInt(x[0]) - parseInt(y[0]);
                 });
-                object.data = objectData;
+                var yearlyObject = [];
+                var yearlyData = [];
+                var currentYear = null;
+                for(var k=0; k<objectData.length; k++){
+                    var temp = objectData[k];
+                    if(currentYear == null||currentYear !=temp[0]){
+                        if(currentYear != null){
+                            yearlyData.push(yearlyObject);
+                            yearlyObject = [];
+                        }
+                        currentYear = temp[0];
+                        yearlyObject[0] = currentYear;
+                        yearlyObject[1] = temp[1];
+                    }else{
+                        yearlyObject[1]+=temp[1];
+                    }
+                }
+                yearlyData.push(yearlyObject);
+                object.data = yearlyData;
                 results.push(object);
             }
             return results;
         }
-
     });
 })();

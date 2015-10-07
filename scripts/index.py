@@ -4,9 +4,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import utils, os
 
-filename = "ipg110104.xml"
-start = True
-startpoint = "12854740"
+filename = "ipg090106.xml"
+start = False
+startpoint = "11368479"
 basedir = os.path.dirname(__file__)
 relpath = "../data"
 filepath = os.path.join(basedir, relpath, filename)
