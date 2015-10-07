@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import utils, os
 
-filename = "ipg130101.xml"
+filename = "ipg110104.xml"
 start = True
 startpoint = "12854740"
 basedir = os.path.dirname(__file__)
@@ -19,6 +19,7 @@ def updatemissingsubclass(e):
     f.write(e + "\n")
     f.close()
 num = 0
+nocpcpatent = 0
 for item in utils.xmlSplitter(open(filepath, 'r')):
     docnumber = ""
     abstract = ""
@@ -68,6 +69,7 @@ for item in utils.xmlSplitter(open(filepath, 'r')):
         cpcnodes = list(root.iter("classification-ipcr"))
         if(len(cpcnodes) == 0):
             print "This patent does not have cpc codes"
+            nocpcpatent+=1
             continue
     # get classification code
     for cpc in cpcnodes:
@@ -169,3 +171,5 @@ for item in utils.xmlSplitter(open(filepath, 'r')):
     print "Done"
     print
     num+=1;
+print "INDEXED ", num, " PATENTS"
+print nocpcpatent, " PATENTS WITH NO CPC CODES"

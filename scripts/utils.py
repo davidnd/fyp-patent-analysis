@@ -3,6 +3,7 @@ from nltk.corpus import stopwords
 import string
 
 stopwordsList = set(stopwords.words('english'))
+stopwordsList.add('fig')
 table = string.maketrans(string.punctuation, ' '*len(string.punctuation))
 
 def xmlSplitter(data, separator = lambda x: x.startswith("<?xml")):

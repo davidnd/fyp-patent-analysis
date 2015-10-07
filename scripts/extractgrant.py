@@ -10,8 +10,8 @@ def xmlSplitter(data, separator = lambda x: x.startswith("<?xml")):
         buff.append(line)
     yield ''.join(buff)
 
-docno = "29437979"
-filename = "ipg140107.xml"
+docno = "29313375"
+filename = "ipg110104.xml"
 basedir = os.path.dirname(__file__)
 relpath = "../data"
 filepath = os.path.join(basedir, relpath, filename)
