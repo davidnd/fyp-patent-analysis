@@ -8,7 +8,7 @@ var models = require('./models');
 
 var routes = require('./routes/index');
 var timeseries = require('./routes/timeseries');
-
+var external = require('./routes/external')
 var app = express();
 
 // view engine setup
@@ -25,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/timeseries', timeseries);
+app.use('/external', external);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
