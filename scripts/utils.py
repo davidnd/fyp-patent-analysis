@@ -4,7 +4,8 @@ import string
 
 stopwordsList = set(stopwords.words('english'))
 stopwordsList.add('fig')
-table = string.maketrans(string.punctuation, ' '*len(string.punctuation))
+# table = string.maketrans(string.punctuation, ' '*len(string.punctuation))
+table = string.maketrans("", "")
 
 def xmlSplitter(data, separator = lambda x: x.startswith("<?xml")):
     buff = []
@@ -20,9 +21,9 @@ def getElementText(element):
     if(element is None):
         return ""
     text = "".join(element.itertext())
+    text = text.translate(table, string.punctuation)
     if(isinstance(text, unicode)):
         text = unidecode(text)
-    text = text.translate(table)
     text = ''.join([i for i in text if not i.isdigit()])
     text = " ".join([i for i in text.lower().split() if i not in stopwordsList])
     return text
