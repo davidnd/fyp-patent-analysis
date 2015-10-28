@@ -4,6 +4,7 @@ import string
 
 stopwordsList = set(stopwords.words('english'))
 stopwordsList.add('fig')
+stopwordsList.add('figs')
 # table = string.maketrans(string.punctuation, ' '*len(string.punctuation))
 table = string.maketrans("", "")
 
