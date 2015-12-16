@@ -29,3 +29,7 @@ ipa140102.xml almost done but majority is sept, fuck.....
 - ipg100105.xml 3847 indexed and 514 no cpc
 - ipg090106.xml 3000 indexed
 
+
+ipc code: A01B 1/00 is represented as A01B00100 ( main group is 0 padding to make it 3 digits)
+subclass: A01B
+main group: 7 chars: A01B001

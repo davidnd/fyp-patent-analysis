@@ -63,3 +63,4 @@ target/
 scripts/cpcschema
 
 data
+*.class

@@ -6,4 +6,21 @@
 
 4. zoom in graph
 
+5. TAG cloud
+
 Note: half of inventors or assignees are from US itself
+
+
+Classifier
+    Term extraction
+        NLP
+        rank (tf idf)
+    Algorithm
+        Neural network
+        knn
+        Naive bayes
+    First 3 level and refining for maingroup    
+Search engine
+Graph
+
+
