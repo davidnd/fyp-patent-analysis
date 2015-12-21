@@ -1,4 +1,7 @@
+package fyp.utils;
+
 import java.sql.*;
+import fyp.models.Patent;
 
 public class DatabaseConnector{
     private String URL = "jdbc:mysql://localhost/wipo";
@@ -6,7 +9,8 @@ public class DatabaseConnector{
     private String PASS = "root";
     private Connection connection;
     private Statement stmt;
-    private PreparedStatement pStmt = null;
+    private PreparedStatement pStmt;
+    private ResultSet rs;
     public DatabaseConnector(String url, String user, String pass){
         this.URL = url;
         this.USER = user;
@@ -17,11 +21,16 @@ public class DatabaseConnector{
         try{
             Class.forName("com.mysql.jdbc.Driver");
             this.connection = DriverManager.getConnection(this.URL, this.USER, this.PASS);
+            this.stmt = this.connection.createStatement();
         }
         catch(Exception e){
             e.printStackTrace();
             close();
         }
+    }
+    public void query(String sql){
+        // this.stmt = connection.createStatement();
+
     }
     public void insertPatent(Patent p){
         String sql = "INSERT into wipo.train(title, abstract, text, claims, section, class, subclass, maingroup) VALUES(?,?,?,?,?,?,?,?)";
@@ -40,9 +49,15 @@ public class DatabaseConnector{
         catch(Exception e){
             e.printStackTrace();
         }
+        finally{
+            close();
+        }
     }
     private void close(){
         try{
+            if(this.rs != null) this.rs.close();
+            if(this.stmt != null) this.stmt.close();
+            if(this.pStmt != null) this.pStmt.close();
             if(this.connection != null) this.connection.close();
         }
         catch(Exception e){

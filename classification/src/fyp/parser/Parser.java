@@ -1,3 +1,5 @@
+package fyp.parser;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -5,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.io.File;
+import fyp.utils.Helper;
+import fyp.models.Patent;
+import fyp.utils.DatabaseConnector;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;

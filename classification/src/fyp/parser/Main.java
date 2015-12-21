@@ -1,3 +1,8 @@
+package fyp.parser;
+
+import fyp.utils.DatabaseConnector;
+import fyp.models.Patent;
+
 class Main{
     public static void main(String[] args) {
         DatabaseConnector connector = new DatabaseConnector();

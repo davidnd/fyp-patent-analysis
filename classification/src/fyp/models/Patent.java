@@ -1,3 +1,7 @@
+package fyp.models;
+
+import fyp.utils.Helper;
+
 public class Patent{
     private String title, abs, text, claims;
     private String Section, Class, Subclass, Group;

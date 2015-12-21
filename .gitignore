@@ -64,3 +64,4 @@ scripts/cpcschema
 
 data
 *.class
+/papers

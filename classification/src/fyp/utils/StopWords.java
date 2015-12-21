@@ -1,3 +1,5 @@
+package fyp.utils;
+
 import java.util.HashSet;
 
 public class StopWords{
