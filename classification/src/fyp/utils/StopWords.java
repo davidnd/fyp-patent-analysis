@@ -539,6 +539,8 @@ public class StopWords{
         list.add("claims");
         list.add("claim");
         list.add("claimed");
+        list.add("method");
+        list.add("methods");
         return list;
     }
     public static void add(String word) {

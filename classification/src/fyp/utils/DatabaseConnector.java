@@ -1,6 +1,8 @@
 package fyp.utils;
 
 import java.sql.*;
+import java.util.List;
+import java.util.ArrayList;
 import fyp.models.Patent;
 
 public class DatabaseConnector{
@@ -28,9 +30,36 @@ public class DatabaseConnector{
             close();
         }
     }
-    public void query(String sql){
-        // this.stmt = connection.createStatement();
-
+    public Connection createConnection(){
+        if(this.connection != null){
+            return this.connection;
+        }
+        else{
+            connect();
+            return this.connection;
+        }
+    }
+    public List <Patent> queryPatent(String sql){
+        List <Patent> res = new ArrayList <Patent>();
+        try{
+            this.stmt = connection.createStatement();
+            this.rs = this.stmt.executeQuery(sql);
+            while(this.rs.next()){
+                Patent p = new Patent();
+                p.setTitle(this.rs.getString("title"));
+                p.setText(this.rs.getString("text"));
+                p.setClaims(this.rs.getString("claims"));
+                p.setAbstract(this.rs.getString("abstract"));
+                res.add(p);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        finally{
+            close();
+        }
+        return res;
     }
     public void insertPatent(Patent p){
         String sql = "INSERT into wipo.train(title, abstract, text, claims, section, class, subclass, maingroup) VALUES(?,?,?,?,?,?,?,?)";
@@ -53,15 +82,26 @@ public class DatabaseConnector{
             close();
         }
     }
-    private void close(){
-        try{
-            if(this.rs != null) this.rs.close();
-            if(this.stmt != null) this.stmt.close();
-            if(this.pStmt != null) this.pStmt.close();
-            if(this.connection != null) this.connection.close();
-        }
-        catch(Exception e){
-            System.out.println("Could not close the connection!");
-        }
+    public void close(){
+        if(this.rs != null) 
+            try{
+                this.rs.close();
+            } 
+            catch(Exception e){e.printStackTrace();};
+        if(this.stmt != null) 
+            try{
+                this.stmt.close();
+            } 
+            catch(Exception e){e.printStackTrace();};
+        if(this.pStmt != null) 
+            try{
+                this.pStmt.close();
+            } 
+            catch(Exception e){e.printStackTrace();};
+        if(this.connection != null) 
+            try{
+                this.connection.close();
+            } 
+            catch(Exception e){e.printStackTrace();};
     }
 }
