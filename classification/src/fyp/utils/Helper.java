@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.util.Arrays;
 import java.io.FilenameFilter;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class Helper{
     public static String [] listDir(String addr){
@@ -30,13 +32,13 @@ public class Helper{
         return b.toString();
     }
     public static boolean isNumeric(String word){
-        return word.matches("-?\\d+(\\.\\d+)?");
+        return word.trim().toLowerCase().matches("-?\\d+(\\.\\d+)?");
     }
     public static boolean containsNumber(String w){
-        return w.matches(".*\\d.*");
+        return w.trim().toLowerCase().matches(".*\\d.*");
     }
     public static String removeNewLine(String s){
-        return s.replaceAll("\\r\\n|\\r|\\n", " ");
+        return s.trim().replaceAll("\\r\\n|\\r|\\n", " ");
     }
     public static void writeLog(String s){
         try{
@@ -52,5 +54,42 @@ public class Helper{
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+    public static boolean isXML(String fileName){
+        int i = fileName.lastIndexOf('.');
+        if (i > 0) {
+            String extension = fileName.substring(i+1);
+            if(extension.equals("xml")) return true;
+        }
+        return false;
+    }
+    public static boolean isModel(File file){
+        String name = file.getName();
+        int i = name.lastIndexOf('.');
+        if(i > 0){
+            String ext = name.substring(i+1);
+            String prefix = name.substring(0, i);
+            if(ext.equals("ser") && prefix.length() == 4){
+                return true;
+            }
+        }
+        return false;
+    }
+    public static String readFile(String addr){
+        String content = null;
+        try(
+            BufferedReader br = new BufferedReader(new FileReader(addr));
+        ){
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+            while(line != null){
+                sb.append(line);
+                line = br.readLine();
+            }
+            content = sb.toString();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return content;
     }
 }

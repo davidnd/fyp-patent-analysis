@@ -74,7 +74,7 @@ public class Parser{
         File dirs = new File(dir);
         File [] files = dirs.listFiles();
         for (File f: files) {
-            if(f.isFile() && isXML(f.getName())){
+            if(f.isFile() && Helper.isXML(f.getName())){
                 System.out.println("Parsing " + f.getName());
                 Patent p = parse(f.getAbsolutePath());
                 if(p == null) continue;
@@ -84,13 +84,5 @@ public class Parser{
             else if(f.isDirectory())
                 parseDir(f.getAbsolutePath(), db);
         }
-    }
-    public static boolean isXML(String fileName){
-        int i = fileName.lastIndexOf('.');
-        if (i > 0) {
-            String extension = fileName.substring(i+1);
-            if(extension.equals("xml")) return true;
-        }
-        return false;
     }
 }

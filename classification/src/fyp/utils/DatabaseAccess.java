@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.*;
 import fyp.models.ClassModel;
+import fyp.classifier.Classifier;
 public class DatabaseAccess{
     public DatabaseAccess(){
     }
@@ -29,11 +30,30 @@ public class DatabaseAccess{
         }
         return classes;
     }
+    public static int getPatentCount(){
+        String sql = "SELECT count(*) from wipo.train";
+        DatabaseConnector connector = new DatabaseConnector();
+        try(Connection conn = connector.createConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+        ){
+            if(rs.next()){
+                return rs.getInt(1);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally{
+            connector.close();
+        }
+        return -1;
+    }
     public static void buildWordMap(ClassModel model){
         String symbol = model.getSymbol();
         // String sql = "SELECT title from wipo.train where subclass=?";
         String sql = "SELECT title, abstract, text, claims from wipo.train where subclass = ?";
         DatabaseConnector connector = new DatabaseConnector();
+        int count = 0;
         try(
             Connection conn = connector.createConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -45,6 +65,7 @@ public class DatabaseAccess{
                 ResultSet rs = stmt.executeQuery();
             ){
                 while(rs.next()){
+                    count++;
                     String title = rs.getString("title");
                     String abs = rs.getString("abstract");
                     String text = rs.getString("text");
@@ -56,6 +77,7 @@ public class DatabaseAccess{
                     p.setClaims(claims);
                     model.process(p);
                 }
+                model.setPrior(count * 1.0 /Classifier.patentCount);
             }
         }
         catch(Exception e){

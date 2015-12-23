@@ -12,6 +12,7 @@ import java.io.Serializable;
 public class ClassModel implements Serializable{
     private Map <String, Integer> wordCount;
     private String classSymbol;
+    private double prior;
     private int count;
     private static final int TITLE_WEIGHT = 20;
     private static final int ABSTRACT_WEIGHT = 3;
@@ -93,5 +94,11 @@ public class ClassModel implements Serializable{
     }
     public int getCount(){
         return this.count;
+    }
+    public void setPrior(double p){
+        this.prior = p;
+    }
+    public double getPrior(){
+        return this.prior;
     }
 }
