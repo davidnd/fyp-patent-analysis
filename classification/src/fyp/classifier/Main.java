@@ -3,7 +3,10 @@ package fyp.classifier;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 import fyp.utils.Helper;
+import fyp.models.Result;
+
 public class Main{
     private static int TOP_K_CLASS = 10;
     public static void main(String[] args) {

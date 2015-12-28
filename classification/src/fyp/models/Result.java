@@ -1,4 +1,4 @@
-package fyp.classifier;
+package fyp.models;
 
 public class Result{
     private double result;
@@ -19,12 +19,4 @@ public class Result{
     public void setSymbol(String s){
         this.classSymbol = s;
     }
-    // public int compareTo(Result other){
-    //     double otherRes = ((Result) other).getResult();
-    //     if(otherRes > this.result)
-    //         return 1;
-    //     else if(otherRes == this.result)
-    //         return -1;
-    //     return 0;
-    // }
 }

@@ -3,7 +3,6 @@ package fyp.models;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
-import fyp.classifier.Vocabulary; 
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.File;

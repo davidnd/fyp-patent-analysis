@@ -23,6 +23,7 @@ public class Helper{
         return dirs;
     }
     public static String removeStopWords(String s){
+        if(s == null) return s;
         StringBuilder b = new StringBuilder();
         for(String word: s.split("\\W+")){
             if(!StopWords.isStopWord(word) && !isNumeric(word) && !containsNumber(word)){
@@ -32,12 +33,15 @@ public class Helper{
         return b.toString();
     }
     public static boolean isNumeric(String word){
+        if(word == null) return false;
         return word.trim().toLowerCase().matches("-?\\d+(\\.\\d+)?");
     }
     public static boolean containsNumber(String w){
+        if(w == null) return false;
         return w.trim().toLowerCase().matches(".*\\d.*");
     }
     public static String removeNewLine(String s){
+        if(s == null) return s;
         return s.trim().replaceAll("\\r\\n|\\r|\\n", " ");
     }
     public static void writeLog(String s){
@@ -56,6 +60,7 @@ public class Helper{
         }
     }
     public static boolean isXML(String fileName){
+        if(fileName == null) return false;
         int i = fileName.lastIndexOf('.');
         if (i > 0) {
             String extension = fileName.substring(i+1);

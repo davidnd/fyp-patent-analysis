@@ -23,7 +23,6 @@ public class DatabaseConnector{
         try{
             Class.forName("com.mysql.jdbc.Driver");
             this.connection = DriverManager.getConnection(this.URL, this.USER, this.PASS);
-            this.stmt = this.connection.createStatement();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -62,7 +61,7 @@ public class DatabaseConnector{
         return res;
     }
     public void insertPatent(Patent p){
-        String sql = "INSERT into wipo.train(title, abstract, text, claims, section, class, subclass, maingroup) VALUES(?,?,?,?,?,?,?,?)";
+        String sql = "INSERT into wipo.test(title, abstract, text, claims, section, class, subclass, maingroup) VALUES(?,?,?,?,?,?,?,?)";
         try{
             this.pStmt = this.connection.prepareStatement(sql);
             pStmt.setString(1, p.getTitle());
@@ -77,9 +76,6 @@ public class DatabaseConnector{
         }
         catch(Exception e){
             e.printStackTrace();
-        }
-        finally{
-            close();
         }
     }
     public void close(){

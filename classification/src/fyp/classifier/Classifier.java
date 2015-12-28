@@ -12,11 +12,12 @@ import java.util.Comparator;
 
 import fyp.utils.DatabaseConnector;
 import fyp.utils.DatabaseAccess;
-import fyp.models.ClassModel;
+import fyp.models.*;
 import fyp.utils.Helper;
 
 public class Classifier{
     public static int patentCount;
+    public static int THRES_HOLD = 10;
     String dir = "../models/";
     List <ClassModel> models;
     public Classifier(){
@@ -45,8 +46,8 @@ public class Classifier{
         Vocabulary.save();
     }
     public List<Result> classify(String text){
-        text = Helper.removeNewLine(text);
-        text = Helper.removeStopWords(text);
+        // text = Helper.removeNewLine(text);
+        // text = Helper.removeStopWords(text);
         List <Result> results = new ArrayList <Result> ();
         for (ClassModel model: this.models) {
             double s = model.getPrior();
@@ -65,6 +66,69 @@ public class Classifier{
             }
         });
         return results;
+    }
+    public void update(List <TestResult> rs){
+        PreparedStatement pstmt = null;
+        DatabaseConnector connector = new DatabaseConnector();
+        try{
+            Connection conn = connector.createConnection();
+            String sql = "UPDATE wipo.test set classified = ? where id = ?";
+             pstmt = conn.prepareStatement(sql);
+            for (TestResult r: rs ) {
+                int id = r.getId();
+                String classified = r.getClassifiedLabel();
+                pstmt.setString(1, classified);
+                pstmt.setInt(2, id);
+                pstmt.executeUpdate();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            if(pstmt!=null) try{pstmt.close();}catch(Exception e){e.printStackTrace();}
+            if(connector!=null) try{connector.close();}catch(Exception e){e.printStackTrace();}
+        }
+        
+    }
+    public void test(){
+        int total = 28923, id = 0;
+        String sql = "SELECT * from wipo.test where classified is null limit 100";
+        DatabaseConnector connector = new DatabaseConnector();
+        Statement stmt = null;
+        ResultSet rs = null;
+        while(id < total){
+            List <TestResult> testResults = new ArrayList <TestResult> ();
+            try{
+                Connection conn = connector.createConnection();
+                // conn.setAutoCommit(false);
+                stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                stmt.setFetchSize(1000);
+                rs = stmt.executeQuery(sql);
+                rs.beforeFirst();
+                while (rs.next()){
+                    id = rs.getInt("id");
+                    System.out.println("Testing patent id = " + id);
+                    String title = rs.getString("title");
+                    String abs = rs.getString("abstract");
+                    String text = rs.getString("text");
+                    String claims = rs.getString("claims");
+                    String allText = title + " " + abs + " " + text + " " + claims;
+                    List <Result> results = classify(allText);
+                    TestResult a = new TestResult(id);
+                    a.setResults(results.subList(0, Classifier.THRES_HOLD));
+                    testResults.add(a);
+                    // rs.updateRow();
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                connector.close();
+            }finally{
+                if(rs != null)try{rs.close();}catch(Exception e){e.printStackTrace();connector.close();}
+                if( stmt != null )try{stmt.close();}catch(Exception e){e.printStackTrace();connector.close();}
+                update(testResults);
+            }
+        }
+        
     }
     public void loadModels(){
         File folder = new File(this.dir);

@@ -1,4 +1,4 @@
-package fyp.classifier;
+package fyp.models;
 
 import java.util.HashSet;
 import java.io.*;
