@@ -14,6 +14,7 @@
     "jade": "~1.11.0",
     "morgan": "~1.6.1",
     "mysql": "^2.9.0",
+    "request": "^2.67.0",
     "sequelize": "^3.7.1",
     "serve-favicon": "~2.3.0"
   }

@@ -1,0 +1,25 @@
+extends layout
+
+block content
+    div.container-fluid.margin-20(ng-app="classifier")
+        div(ng-controller="ClassificationController")
+            div.row
+                div.form-group
+                    label(for='patent-text') Patent text:
+                    textarea.form-control(rows='10', id='patent-text', ng-model='text')
+            div.row
+                button.btn.btn-success.pull-right(type='button', ng-click='classify()') Classify
+            div.row(ng-show = 'done')
+                div.col-xs-6
+                    table.table.table-striped
+                        thead
+                            tr
+                                th Subclass
+                                th Confidence (Smaller, better)
+                                th Remarks
+                        tbody
+                            tr(ng-repeat = 'class in classes')
+                                td {{class.class}}
+                                td {{class.probability}}
+                                td 
+                                    button.btn.btn-xs.btn-primary Refine

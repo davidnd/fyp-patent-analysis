@@ -46,8 +46,8 @@ public class Classifier{
         Vocabulary.save();
     }
     public List<Result> classify(String text){
-        // text = Helper.removeNewLine(text);
-        // text = Helper.removeStopWords(text);
+        text = Helper.removeNewLine(text);
+        text = Helper.removeStopWords(text);
         List <Result> results = new ArrayList <Result> ();
         for (ClassModel model: this.models) {
             double s = model.getPrior();
