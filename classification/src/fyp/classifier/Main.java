@@ -54,7 +54,7 @@ public class Main{
             for (Map.Entry <String, Object> entry: params.entrySet() ) {
                 String key = entry.getKey();
                 Object value = entry.getValue();
-                System.out.println("Key = " + key + "; Value = " + value);
+                // System.out.println("Key = " + key + "; Value = " + value);
             }
             List <Result> res = null;
             if(params.containsKey("text")){

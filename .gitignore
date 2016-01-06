@@ -1,14 +1,13 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-
 # C extensions
 *.so
 
 # Distribution / packaging
 .Python
 env/
-build/
+*.class
 develop-eggs/
 dist/
 downloads/
@@ -42,6 +41,8 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *,cover
+*/build/log
+*.txt
 
 # Translations
 *.mo
