@@ -1,3 +1,0 @@
-A game of chance is conducted on a video gaming machine controlled by a processor in response to a wager. The game includes a plurality of symbols randomly selected for placement in a displayed symbol array. A shuffle feature is triggered in response to the displayed symbols including a sequence of value-based symbols. The sequence defines a first award. The sequence of value-based symbols are then re-ordered such that the re-ordered sequence defines a second award. The second award is awarded to the player.
-Shuffle feature for a game of chance
-

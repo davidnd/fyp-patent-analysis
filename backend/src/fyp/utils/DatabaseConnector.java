@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import fyp.models.Patent;
 
 public class DatabaseConnector{
-    private String URL = "jdbc:mysql://localhost/wipo";
+    private String DATABASE = "wipo";
+    private String URL = "jdbc:mysql://localhost/";
     private String USER = "root";
     private String PASS = "root";
     private Connection connection;
@@ -18,7 +19,12 @@ public class DatabaseConnector{
         this.USER = user;
         this.PASS = pass;
     }
-    public DatabaseConnector(){};
+    public DatabaseConnector(String database){
+        this.URL += database;
+    }
+    public DatabaseConnector(){
+        this.URL += this.DATABASE;
+    };
     public void connect(){
         try{
             Class.forName("com.mysql.jdbc.Driver");

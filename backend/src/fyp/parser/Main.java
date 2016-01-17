@@ -9,6 +9,7 @@ class Main{
         DatabaseConnector connector = new DatabaseConnector();
         connector.connect();
         String root = "../../data/wipo-alpha/wipo-alpha/test/";
-        Parser.parseDir(root, connector);
+        Parser parser = new WIPOParser();
+        parser.parseDir(root, connector);
     } 
 }

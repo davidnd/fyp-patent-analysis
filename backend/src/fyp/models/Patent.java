@@ -1,11 +1,13 @@
 package fyp.models;
 
 import fyp.utils.Helper;
-
+import java.util.Date;
 public class Patent{
     private String title, abs, text, claims;
     private String Section, Class, Subclass, Group;
     private String inventor, company;
+    private String i_city, i_country, a_city, a_country;
+    private Date date;
     public Patent(){
 
     }
@@ -39,6 +41,21 @@ public class Patent{
     public void setCompany(String c){
         this.company = c;
     }
+    public void setInventorCity (String s){
+        this.i_city = s;
+    }
+    public void setInventorCountry(String s){
+        this.i_country = s;
+    }
+    public void setCompanyCity(String s){
+        this.a_city = s;
+    }
+    public void setCompanyCountry (String s){
+        this.a_country = s;
+    }
+    public void setDate(Date d){
+        this.date = d;
+    } 
     public String getSectionCode(){
         return this.Section;
     }
@@ -51,12 +68,17 @@ public class Patent{
     public String getTitle(){
         return this.title;
     }
-    public String getAbstract(){
-        return this.abs;
-    }
+    public String getAbstract(){return this.abs;}
     public String getClaims(){ return this.claims;}
     public String getText(){ return this.text; }
-    public String getGroupCode(){ return this.Group; }
+    public String getGroupCode(){ return this.Group;}
+    public Date getDate(){return this.date;}
+    public String getCompanyName(){return this.company;}
+    public String getInventorName(){return this.inventor;}
+    public String getCompanyCountry(){return this.a_country;}
+    public String getCompanyCity(){return this.a_city;}
+    public String getInventorCity(){return this.i_city;}
+    public String getInventorCountry(){return this.i_country;}
     public void print(){
         System.out.println("Section: " + getSectionCode());
         System.out.println("Class: " + getClassCode());
