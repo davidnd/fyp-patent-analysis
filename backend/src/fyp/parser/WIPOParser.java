@@ -6,8 +6,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.io.File;
 import fyp.utils.Helper;
 import fyp.models.Patent;
+import fyp.utils.DatabaseConnector;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -19,11 +21,11 @@ import javax.xml.stream.events.XMLEvent;
 
 public class WIPOParser extends Parser{
 
-    public Patent parse(String addr){
+    public Patent parse(File file){
         Patent p = new Patent();
         try{
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            InputStream in = new FileInputStream(addr);
+            InputStream in = new FileInputStream(file);
             XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
             while(eventReader.hasNext()){
                 XMLEvent event = eventReader.nextEvent();
@@ -58,7 +60,7 @@ public class WIPOParser extends Parser{
             }   
         }catch(Exception e){
             e.printStackTrace();
-            Helper.writeLog(addr);
+            Helper.writeLog(file.getAbsolutePath());
             return null;
         }
         return p;
@@ -69,4 +71,20 @@ public class WIPOParser extends Parser{
         p.setSubclass(ipc.substring(0, 4));
         p.setGroup(ipc.substring(0, 7));
     }
+    public void parseDir(String path, DatabaseConnector db){
+        File dirs = new File(path);
+        File [] files = dirs.listFiles();
+        for (File f: files) {
+            if(f.isFile() && Helper.isXML(f.getName())){
+                System.out.println("Parsing " + f.getName());
+                Patent p = parse(f);
+                if(p == null) continue;
+                p.clean();
+                db.insertPatent(p);
+            }
+            else if(f.isDirectory())
+                parseDir(f.getAbsolutePath(), db);
+        }
+    }
+    public Patent parse(String s){return null;}
 }

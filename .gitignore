@@ -62,7 +62,10 @@ target/
 
 .DS_Store
 scripts/cpcschema
-
+backend/src/fyp/parser/log
 data
+/backend/jars/
+/backend/models/
+/backend/index/
 *.class
 /papers

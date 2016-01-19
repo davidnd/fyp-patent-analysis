@@ -50,10 +50,10 @@ public class Indexer{
         doc.add(new TextField("text", p.getText(), Field.Store.YES));
         doc.add(new TextField("claims", p.getClaims(), Field.Store.NO));
         doc.add(new TextField("text", p.getText(), Field.Store.YES));
-        doc.add(new StringField("inventor", p.getInventorName(), Field.Store.YES));
-        doc.add(new TextField("company", p.getCompanyName(), Field.Store.YES));
-        doc.add(new StringField("a_city", p.getCompanyCity(), Field.Store.YES));
-        doc.add(new StringField("a_country", p.getCompanyCountry(), Field.Store.YES));
+        doc.add(new StringField("inventor", p.getInventor(), Field.Store.YES));
+        doc.add(new TextField("company", p.getCompany(), Field.Store.YES));
+        doc.add(new StringField("a_city", p.getCity(), Field.Store.YES));
+        doc.add(new StringField("a_country", p.getCountry(), Field.Store.YES));
         return doc;
     }
     public int createIndex(){
@@ -89,10 +89,8 @@ public class Indexer{
                 p.setClaims(claims);
                 p.setCompany(orgname);
                 p.setInventor(i_firstname + " " + i_lastname);
-                p.setInventorCity(i_city);
-                p.setInventorCountry(i_country);
-                p.setCompanyCity(a_city);
-                p.setCompanyCountry(a_country);
+                p.setCity(a_city);
+                p.setCountry(a_country);
                 p.setDate(date);
                 indexPatent(p);
                 count++;

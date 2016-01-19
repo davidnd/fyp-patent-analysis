@@ -3,10 +3,10 @@ package fyp.models;
 import fyp.utils.Helper;
 import java.util.Date;
 public class Patent{
-    private String title, abs, text, claims;
-    private String Section, Class, Subclass, Group;
+    private String title, abs, text, claims, docid;
+    private String Section, Class, Subclass, Group, ipc;
     private String inventor, company;
-    private String i_city, i_country, a_city, a_country;
+    private String country, city;
     private Date date;
     public Patent(){
 
@@ -41,21 +41,17 @@ public class Patent{
     public void setCompany(String c){
         this.company = c;
     }
-    public void setInventorCity (String s){
-        this.i_city = s;
+    public void setCity(String s){
+        this.city = s;
     }
-    public void setInventorCountry(String s){
-        this.i_country = s;
-    }
-    public void setCompanyCity(String s){
-        this.a_city = s;
-    }
-    public void setCompanyCountry (String s){
-        this.a_country = s;
+    public void setCountry (String s){
+        this.country = s;
     }
     public void setDate(Date d){
         this.date = d;
     } 
+    public void setDocId(String id){this.docid = id;}
+    public void setIPC(String ipc){this.ipc = ipc;}
     public String getSectionCode(){
         return this.Section;
     }
@@ -68,18 +64,20 @@ public class Patent{
     public String getTitle(){
         return this.title;
     }
+    public String getIPC(){return this.ipc;}
+    public String getDocId(){return this.docid;}
     public String getAbstract(){return this.abs;}
     public String getClaims(){ return this.claims;}
     public String getText(){ return this.text; }
     public String getGroupCode(){ return this.Group;}
     public Date getDate(){return this.date;}
-    public String getCompanyName(){return this.company;}
-    public String getInventorName(){return this.inventor;}
-    public String getCompanyCountry(){return this.a_country;}
-    public String getCompanyCity(){return this.a_city;}
-    public String getInventorCity(){return this.i_city;}
-    public String getInventorCountry(){return this.i_country;}
+    public String getCompany(){return this.company;}
+    public String getInventor(){return this.inventor;}
+    public String getCountry(){return this.country;}
+    public String getCity(){return this.city;}
     public void print(){
+        System.out.println("Docid: " + getDocId());
+        System.out.println("Date: " + getDate());
         System.out.println("Section: " + getSectionCode());
         System.out.println("Class: " + getClassCode());
         System.out.println("Subclass: " + getSubclassCode());
@@ -88,6 +86,11 @@ public class Patent{
         System.out.println("Abstract: " + getAbstract());
         System.out.println("Text: " + getText());
         System.out.println("Claims: " + getClaims());
+        System.out.println("City: " + getCity());
+        System.out.println("Country: " + getCountry());
+        System.out.println("Inventor: " + getInventor());
+        System.out.println("Company: " + getCompany());
+        System.out.println("IPC: " + getIPC());
     }
     public void clean(){
         //remove new line char

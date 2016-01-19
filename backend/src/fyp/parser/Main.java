@@ -7,9 +7,11 @@ import fyp.models.Patent;
 class Main{
     public static void main(String[] args) {
         DatabaseConnector connector = new DatabaseConnector();
-        connector.connect();
-        String root = "../../data/wipo-alpha/wipo-alpha/test/";
-        Parser parser = new WIPOParser();
+        // connector.connect();
+        String root = "../../data";
+        Parser parser = new USPTOParser();
+        // parser.parseDir(root, connector);
+        File file = new File(root);
         parser.parseDir(root, connector);
     } 
 }
