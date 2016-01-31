@@ -80,7 +80,7 @@ public class WIPOParser extends Parser{
                 Patent p = parse(f);
                 if(p == null) continue;
                 p.clean();
-                db.insertPatent(p);
+                db.insertPatent(p, "test");
             }
             else if(f.isDirectory())
                 parseDir(f.getAbsolutePath(), db);

@@ -3,6 +3,8 @@ package fyp.utils;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import fyp.models.Patent;
 
 public class DatabaseConnector{
@@ -20,6 +22,7 @@ public class DatabaseConnector{
         this.PASS = pass;
     }
     public DatabaseConnector(String database){
+        this.DATABASE = database;
         this.URL += database;
     }
     public DatabaseConnector(){
@@ -66,22 +69,71 @@ public class DatabaseConnector{
         }
         return res;
     }
-    public void insertPatent(Patent p){
-        String sql = "INSERT into wipo.test(title, abstract, text, claims, section, class, subclass, maingroup) VALUES(?,?,?,?,?,?,?,?)";
+    public void insertPatent(Patent p, String table){
+        String sql = "INSERT into " + this.DATABASE + "." + table 
+        + "(docid, title, abstract, description, claims, ipccode, date, inventors, assignees, city, country) " 
+         + "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
         try{
+            if(p.getTitle() != null && p.getTitle().length() > 250) p.setTitle(p.getTitle().substring(0,250));
+            if(p.getInventor() != null && p.getInventor().length() > 1025){
+                String []in = p.getInventor().split(";");
+                String res = "";
+                for(int i = 0; i<in.length; i++){
+                    if(res.length() + in[i].length() > 1025){
+                        break;
+                    }
+                    res += in[i];
+                }
+                p.setInventor(res);
+            }
+            if(p.getCompany() != null && p.getCompany().length() > 1025){
+                String []in = p.getCompany().split(";");
+                String res = "";
+                for(int i = 0; i<in.length; i++){
+                    if(res.length() + in[i].length() > 1025){
+                        break;
+                    }
+                    res += in[i];
+                }
+                p.setCompany(res);
+            }
+            if(p.getIPC() != null && p.getIPC().length() > 1025){
+                String []in = p.getIPC().split(";");
+                String res = "";
+                for(int i = 0; i<in.length; i++){
+                    if(res.length() + in[i].length() > 1025){
+                        break;
+                    }
+                    res += in[i];
+                }
+                p.setIPC(res);
+            }
             this.pStmt = this.connection.prepareStatement(sql);
-            pStmt.setString(1, p.getTitle());
-            pStmt.setString(2, p.getAbstract());
-            pStmt.setString(3, p.getText());
-            pStmt.setString(4, p.getClaims());
-            pStmt.setString(5, p.getSectionCode());
-            pStmt.setString(6, p.getClassCode());
-            pStmt.setString(7, p.getSubclassCode());
-            pStmt.setString(8, p.getGroupCode());
+            pStmt.setString(1, p.getDocId());
+            pStmt.setString(2, p.getTitle());
+            pStmt.setString(3, p.getAbstract());
+            pStmt.setString(4, p.getText());
+            pStmt.setString(5, p.getClaims());
+            pStmt.setString(6, p.getIPC());
+            pStmt.setDate(7, p.getDate());
+            pStmt.setString(8, p.getInventor());
+            pStmt.setString(9, p.getCompany());
+            pStmt.setString(10, p.getCity());
+            pStmt.setString(11, p.getCountry());
             this.pStmt.executeUpdate();
         }
         catch(Exception e){
             e.printStackTrace();
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            Helper.writeLog(sw.toString());
+        }
+        finally{
+            if(this.pStmt != null){
+                try{this.pStmt.close();}
+                catch(Exception e){e.printStackTrace();}
+            }
         }
     }
     public void close(){

@@ -1,7 +1,7 @@
 package fyp.models;
 
 import fyp.utils.Helper;
-import java.util.Date;
+import java.sql.Date;
 public class Patent{
     private String title, abs, text, claims, docid;
     private String Section, Class, Subclass, Group, ipc;

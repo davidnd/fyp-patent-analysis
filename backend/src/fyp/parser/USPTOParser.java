@@ -17,7 +17,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.util.stream.Stream;
-import java.util.Date;
+import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -55,12 +55,15 @@ public class USPTOParser extends Parser{
                         while(!(event.isEndElement() && event.asEndElement().getName().getLocalPart().equals("description"))){
                             if(event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("p")){
                                 text =  text + parseAllText(event, eventReader, "p") + ". ";
+                                if(text.split("\\s+").length >= 1000)
+                                    break;
                             }
                             event = eventReader.nextEvent();
                         }
                     }
                     if(startElement.getName().getLocalPart().equals("claim-text")){
-                        claims =  claims + parseAllText(event, eventReader, "claim-text") + " ";
+                        if(claims.split("\\s+").length < 500)
+                            claims =  claims + parseAllText(event, eventReader, "claim-text") + " ";
                     }
                     if(startElement.getName().getLocalPart().equals("applicants")){
                         inventor = parseInventors(event, eventReader);
@@ -82,6 +85,7 @@ public class USPTOParser extends Parser{
                     }
                 }
             }
+            if(docid == null) return null;
             p.setTitle(title);
             p.setAbstract(abs);
             p.setText(text);
@@ -163,9 +167,8 @@ public class USPTOParser extends Parser{
             event = eventReader.nextEvent();
         }
         if(d == null) return null;
-        d = d.substring(0, 4) + "/" + d.substring(4, 6) + "/" + d.substring(6);
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-        Date date = df.parse(d);
+        d = d.substring(0, 4) + "-" + d.substring(4, 6) + "-" + d.substring(6);
+        Date date = Date.valueOf(d);
         return date;
     }
     public String parseDocId(XMLEvent event, XMLEventReader eventReader) throws XMLStreamException{
@@ -222,30 +225,23 @@ public class USPTOParser extends Parser{
     public void parseDir(String path, DatabaseConnector db){
         File dirs = new File(path);
         File [] files = dirs.listFiles();
+        int count = 0;
         for (File f: files) {
             if(f.isFile() && Helper.isXML(f.getName())){
-                System.out.println("Parsing " + f.getName());
+                System.out.println("PARSING FILE : " + f.getName());
+                Helper.writeLog("PARSING FILE : " + f.getName());
                 Path file = Paths.get(f.getAbsolutePath());
                 Patent p;
-                int count = 0;
                 try{
                     Stream<String> lines = Files.lines(file);
                     String content = "";
                     for(String line: (Iterable<String>) lines::iterator){
                         if(line.startsWith("<?xml")){
                             p = parse(content);
-                            if(p == null && count != 0){
-                                System.out.println("BUGSSS");
-                                return;
-                            }
-                            if(p != null){
-                                System.out.println(count + ": ");
-                                p.print();
-                            }
-                            count++;
-                            if(count == 1000){
-                                return;   
-                            } 
+                            if(p == null) continue;
+                            System.out.println("Count = " + count++);
+                            p.clean();
+                            db.insertPatent(p, "patents");
                             content = "";
                         }
                         content += line;
