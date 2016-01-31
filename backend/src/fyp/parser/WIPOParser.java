@@ -60,7 +60,7 @@ public class WIPOParser{
             }   
         }catch(Exception e){
             e.printStackTrace();
-            Helper.writeLog(file.getAbsolutePath());
+            Helper.writeLog("fyp/log/WIPO.log", file.getAbsolutePath());
             return null;
         }
         return p;

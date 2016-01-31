@@ -127,7 +127,7 @@ public class DatabaseConnector{
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
-            Helper.writeLog(sw.toString());
+            Helper.writeLog("fyp/log/dbstacktrace.log", sw.toString());
         }
         finally{
             if(this.pStmt != null){

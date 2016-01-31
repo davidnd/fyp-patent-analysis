@@ -233,9 +233,17 @@ public class USPTOParser implements Runnable{
     public void parse(){
         int count = 0;
         File f = new File(this.path);
+        String name = "noname.log";
+        int index = f.getName().lastIndexOf('.');
+        if (index > 0) {
+            name = f.getName().substring(0, index+1) + "log";
+        }
+        String logPath = "fyp/log/" + name;
         System.out.println("PARSING FILE : " + f.getName());
+        Helper.writeLog(logPath, "PARSING FILE : " + f.getName());
         Path file = Paths.get(this.path);
         Patent p;
+        String currentDocid = null;
         try{
             Stream<String> lines = Files.lines(file);
             String content = "";
@@ -245,6 +253,7 @@ public class USPTOParser implements Runnable{
                     if(p == null) continue;
                     System.out.println("Count = " + count++);
                     p.clean();
+                    currentDocid = p.getDocId();
                     db.insertPatent(p, "patents");
                     content = "";
                 }
@@ -252,10 +261,14 @@ public class USPTOParser implements Runnable{
             }
         }
         catch(Exception e){
+            if(currentDocid != null){
+                Helper.writeLog(logPath, "currentDocid=" + currentDocid);
+            }
             e.printStackTrace();
         }
-        return;
-
+        finally{
+            Helper.writeLog(logPath, "Done");
+        }
     }
     public void run(){
         parse();

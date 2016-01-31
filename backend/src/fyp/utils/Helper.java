@@ -44,9 +44,10 @@ public class Helper{
         if(s == null) return s;
         return s.trim().replaceAll("\\r\\n|\\r|\\n", " ");
     }
-    public static void writeLog(String s){
+    public static void writeLog(String path, String s){
         try{
-            File file = new File("log");
+            File file = new File(path);
+            file.getParentFile().mkdirs();
             if(!file.exists()){
                 file.createNewFile();
             }
