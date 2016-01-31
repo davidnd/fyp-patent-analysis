@@ -19,7 +19,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-public class WIPOParser extends Parser{
+public class WIPOParser{
 
     public Patent parse(File file){
         Patent p = new Patent();
@@ -86,5 +86,4 @@ public class WIPOParser extends Parser{
                 parseDir(f.getAbsolutePath(), db);
         }
     }
-    public Patent parse(String s){return null;}
 }

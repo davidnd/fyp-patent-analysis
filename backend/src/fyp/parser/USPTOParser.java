@@ -22,10 +22,18 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
-public class USPTOParser extends Parser{
-    public Patent parse(File file){return null;}
+public class USPTOParser implements Runnable{
+    private Thread thread;
+    private String path;
+    private DatabaseConnector db;
+    public USPTOParser(String path, DatabaseConnector db){
+        this.path = path;
+        this.db = db;
+        this.thread = new Thread(this);
+        thread.start();
+    }
 
-    public Patent parse(String content){
+    public Patent parseString(String content){
         if(content == "") return null;
         Patent p = new Patent();
         try{
@@ -222,38 +230,35 @@ public class USPTOParser extends Parser{
         if(text.equals("")) return null;
         return text;
     }
-    public void parseDir(String path, DatabaseConnector db){
-        File dirs = new File(path);
-        File [] files = dirs.listFiles();
+    public void parse(){
         int count = 0;
-        for (File f: files) {
-            if(f.isFile() && Helper.isXML(f.getName())){
-                System.out.println("PARSING FILE : " + f.getName());
-                Helper.writeLog("PARSING FILE : " + f.getName());
-                Path file = Paths.get(f.getAbsolutePath());
-                Patent p;
-                try{
-                    Stream<String> lines = Files.lines(file);
-                    String content = "";
-                    for(String line: (Iterable<String>) lines::iterator){
-                        if(line.startsWith("<?xml")){
-                            p = parse(content);
-                            if(p == null) continue;
-                            System.out.println("Count = " + count++);
-                            p.clean();
-                            db.insertPatent(p, "patents");
-                            content = "";
-                        }
-                        content += line;
-                    }
+        File f = new File(this.path);
+        System.out.println("PARSING FILE : " + f.getName());
+        Path file = Paths.get(this.path);
+        Patent p;
+        try{
+            Stream<String> lines = Files.lines(file);
+            String content = "";
+            for(String line: (Iterable<String>) lines::iterator){
+                if(line.startsWith("<?xml")){
+                    p = parseString(content);
+                    if(p == null) continue;
+                    System.out.println("Count = " + count++);
+                    p.clean();
+                    db.insertPatent(p, "patents");
+                    content = "";
                 }
-                catch(Exception e){
-                    e.printStackTrace();
-                }
-                return;
+                content += line;
             }
-            else if(f.isDirectory())
-                parseDir(f.getAbsolutePath(), db);
         }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return;
+
+    }
+    public void run(){
+        parse();
+        this.db.close();
     }
 }
