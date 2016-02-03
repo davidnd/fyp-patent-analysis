@@ -44,14 +44,15 @@ public class Helper{
         if(s == null) return s;
         return s.trim().replaceAll("\\r\\n|\\r|\\n", " ");
     }
-    public static void writeLog(String path, String s){
+    public static void writeLog(String path, String s, boolean b){
+        System.out.println(path);
         try{
             File file = new File(path);
             file.getParentFile().mkdirs();
             if(!file.exists()){
                 file.createNewFile();
             }
-            FileWriter writer = new FileWriter(file.getName(), true);
+            FileWriter writer = new FileWriter(file, b);
             BufferedWriter bw = new BufferedWriter(writer);
             bw.write(s);
             bw.newLine();

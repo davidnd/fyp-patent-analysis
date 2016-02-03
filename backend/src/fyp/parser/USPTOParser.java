@@ -21,11 +21,16 @@ import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 public class USPTOParser implements Runnable{
     private Thread thread;
     private String path;
     private DatabaseConnector db;
+    public static final String logFolder = "fyp/log/";
     public USPTOParser(String path, DatabaseConnector db){
         this.path = path;
         this.db = db;
@@ -230,48 +235,107 @@ public class USPTOParser implements Runnable{
         if(text.equals("")) return null;
         return text;
     }
-    public void parse(){
-        int count = 0;
+    public String getLogFileName(){
         File f = new File(this.path);
-        String name = "noname.log";
+        String name = null;
         int index = f.getName().lastIndexOf('.');
         if (index > 0) {
             name = f.getName().substring(0, index+1) + "log";
         }
-        String logPath = "fyp/log/" + name;
-        System.out.println("PARSING FILE : " + f.getName());
-        Helper.writeLog(logPath, "PARSING FILE : " + f.getName());
+        return name;
+    }
+    public String check(){
+        String logFile = getLogFileName();
+        String docid = null;
+        File dir = new File(this.logFolder);
+        File [] files = dir.listFiles();
+        for(File f: files){
+            if(f.getName().equals(logFile)){
+                // Log file exists
+                try(BufferedReader bf = new BufferedReader(new FileReader(f))){
+                    String line = bf.readLine();
+                    String last = null;
+                    while(line != null){
+                        last = line;
+                        line = bf.readLine();
+                    };
+                    if(last == null) return null;
+                    System.out.println(last);
+                    String [] temp = last.split("=");
+                    if(temp.length == 2) return temp[1];
+                    else if(temp[0].equals("Done")) return "Done";
+                    else return null;
+                } catch(Exception e){
+                    System.out.println("Could not open the log file: " + f.getName());
+                    e.printStackTrace();
+                }
+            }
+        }
+        return docid;
+    }
+    public void parse(String docid){
+        boolean start = true;
+        if(docid != null){
+            start = false;
+        }
+        List <Patent> patents = new ArrayList <Patent>(1000);
+        int count = 0;
+        File f = new File(this.path);
+        String name = getLogFileName();
+        String logPath = this.logFolder + name;
+        String currentDocid = null;
         Path file = Paths.get(this.path);
         Patent p;
-        String currentDocid = null;
+        Helper.writeLog(logPath, "PARSING FILE : " + f.getName(), false);
         try{
             Stream<String> lines = Files.lines(file);
             String content = "";
             for(String line: (Iterable<String>) lines::iterator){
                 if(line.startsWith("<?xml")){
                     p = parseString(content);
-                    if(p == null) continue;
-                    System.out.println("Count = " + count++);
-                    p.clean();
-                    currentDocid = p.getDocId();
-                    db.insertPatent(p, "patents");
+                    if(p == null){
+                        content = "";
+                        continue;
+                    }
+                    if(start && !p.getDocId().equals(docid)){
+                        System.out.println("Count = " + count++ + " Doc id = " + p.getDocId());
+                        p.clean();
+                        patents.add(p);
+                        if(patents.size() == 1000){
+                            currentDocid = p.getDocId();
+                            db.insertPatent(patents, "patents");
+                            patents.clear();
+                        }
+                    }
+                    if(!start && p.getDocId().equals(docid)){
+                        System.out.println("Previous doc found!!!");
+                        System.out.println("Resuming...");
+                        start = true;
+                    }
                     content = "";
                 }
                 content += line;
             }
+            if(patents.size() > 0){
+                db.insertPatent(patents, "patents");
+            }
+            Helper.writeLog(logPath, "Done", true);
         }
         catch(Exception e){
             if(currentDocid != null){
-                Helper.writeLog(logPath, "currentDocid=" + currentDocid);
+                Helper.writeLog(logPath, "currentDocid=" + currentDocid, true);
             }
             e.printStackTrace();
         }
-        finally{
-            Helper.writeLog(logPath, "Done");
-        }
     }
     public void run(){
-        parse();
+        String docid = check();
+        if(docid == null)
+            parse(null);
+        else if(!docid.equals("Done"))
+            parse(docid);
+        else
+            System.out.println("The file was already parsed!");
         this.db.close();
     }
 }

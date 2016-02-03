@@ -20,7 +20,6 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 public class WIPOParser{
-
     public Patent parse(File file){
         Patent p = new Patent();
         try{
@@ -60,7 +59,7 @@ public class WIPOParser{
             }   
         }catch(Exception e){
             e.printStackTrace();
-            Helper.writeLog("fyp/log/WIPO.log", file.getAbsolutePath());
+            Helper.writeLog("fyp/log/WIPO.log", file.getAbsolutePath(), true);
             return null;
         }
         return p;
@@ -74,13 +73,15 @@ public class WIPOParser{
     public void parseDir(String path, DatabaseConnector db){
         File dirs = new File(path);
         File [] files = dirs.listFiles();
+        List <Patent> patents = new ArrayList <Patent>(20);
         for (File f: files) {
             if(f.isFile() && Helper.isXML(f.getName())){
                 System.out.println("Parsing " + f.getName());
                 Patent p = parse(f);
                 if(p == null) continue;
                 p.clean();
-                db.insertPatent(p, "test");
+                patents.add(p);
+                db.insertPatent(patents, "test");
             }
             else if(f.isDirectory())
                 parseDir(f.getAbsolutePath(), db);

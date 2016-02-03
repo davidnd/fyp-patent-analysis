@@ -16,10 +16,17 @@ class Main{
         File [] files = dirs.listFiles();
         for (File f: files) {
             if(f.isFile() && Helper.isXML(f.getName())){
-                DatabaseConnector connector = new DatabaseConnector("patent");
+                DatabaseConnector connector = new DatabaseConnector("fyp");
                 connector.connect();
                 parsers.add(new USPTOParser(f.getAbsolutePath(), connector));
             }
         }
+        // test();
     } 
+    public static void test(){
+        String root = "../../data/grant/ipg150310.xml";
+        DatabaseConnector connector = new DatabaseConnector("fyp");
+        connector.connect();
+        USPTOParser parser = new USPTOParser(root, connector);
+    }
 }

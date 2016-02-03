@@ -38,6 +38,14 @@ public class DatabaseConnector{
             close();
         }
     }
+    public void setAutoCommit (boolean b) throws SQLException{
+        if(this.connection == null) return;
+        this.connection.setAutoCommit(b);
+    }
+    public void commit() throws SQLException{
+        if(this.connection == null) return;
+        this.connection.commit();
+    }
     public Connection createConnection(){
         if(this.connection != null){
             return this.connection;
@@ -69,65 +77,78 @@ public class DatabaseConnector{
         }
         return res;
     }
-    public void insertPatent(Patent p, String table){
+    public void insertPatent(List <Patent> patents, String table){
+        if(connection == null){
+            System.out.println("No connection");
+            return;
+        }
+        if(patents.size() == 0){
+            System.out.println("Empty patents array");
+            return;
+        }
         String sql = "INSERT into " + this.DATABASE + "." + table 
         + "(docid, title, abstract, description, claims, ipccode, date, inventors, assignees, city, country) " 
-         + "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+        + "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
         try{
-            if(p.getTitle() != null && p.getTitle().length() > 250) p.setTitle(p.getTitle().substring(0,250));
-            if(p.getInventor() != null && p.getInventor().length() > 1025){
-                String []in = p.getInventor().split(";");
-                String res = "";
-                for(int i = 0; i<in.length; i++){
-                    if(res.length() + in[i].length() > 1025){
-                        break;
-                    }
-                    res += in[i];
-                }
-                p.setInventor(res);
-            }
-            if(p.getCompany() != null && p.getCompany().length() > 1025){
-                String []in = p.getCompany().split(";");
-                String res = "";
-                for(int i = 0; i<in.length; i++){
-                    if(res.length() + in[i].length() > 1025){
-                        break;
-                    }
-                    res += in[i];
-                }
-                p.setCompany(res);
-            }
-            if(p.getIPC() != null && p.getIPC().length() > 1025){
-                String []in = p.getIPC().split(";");
-                String res = "";
-                for(int i = 0; i<in.length; i++){
-                    if(res.length() + in[i].length() > 1025){
-                        break;
-                    }
-                    res += in[i];
-                }
-                p.setIPC(res);
-            }
+            this.connection.setAutoCommit(false);
             this.pStmt = this.connection.prepareStatement(sql);
-            pStmt.setString(1, p.getDocId());
-            pStmt.setString(2, p.getTitle());
-            pStmt.setString(3, p.getAbstract());
-            pStmt.setString(4, p.getText());
-            pStmt.setString(5, p.getClaims());
-            pStmt.setString(6, p.getIPC());
-            pStmt.setDate(7, p.getDate());
-            pStmt.setString(8, p.getInventor());
-            pStmt.setString(9, p.getCompany());
-            pStmt.setString(10, p.getCity());
-            pStmt.setString(11, p.getCountry());
-            this.pStmt.executeUpdate();
+            for(Patent p: patents){
+                if(p.getTitle() != null && p.getTitle().length() > 250) p.setTitle(p.getTitle().substring(0,250));
+                if(p.getInventor() != null && p.getInventor().length() > 1025){
+                    String []in = p.getInventor().split(";");
+                    String res = "";
+                    for(int i = 0; i<in.length; i++){
+                        if(res.length() + in[i].length() > 1025){
+                            break;
+                        }
+                        res += in[i];
+                    }
+                    p.setInventor(res);
+                }
+                if(p.getCompany() != null && p.getCompany().length() > 1025){
+                    String []in = p.getCompany().split(";");
+                    String res = "";
+                    for(int i = 0; i<in.length; i++){
+                        if(res.length() + in[i].length() > 1025){
+                            break;
+                        }
+                        res += in[i];
+                    }
+                    p.setCompany(res);
+                }
+                if(p.getIPC() != null && p.getIPC().length() > 1025){
+                    String []in = p.getIPC().split(";");
+                    String res = "";
+                    for(int i = 0; i<in.length; i++){
+                        if(res.length() + in[i].length() > 1025){
+                            break;
+                        }
+                        res += in[i];
+                    }
+                    p.setIPC(res);
+                }
+                pStmt.setString(1, p.getDocId());
+                pStmt.setString(2, p.getTitle());
+                pStmt.setString(3, p.getAbstract());
+                pStmt.setString(4, p.getText());
+                pStmt.setString(5, p.getClaims());
+                pStmt.setString(6, p.getIPC());
+                pStmt.setDate(7, p.getDate());
+                pStmt.setString(8, p.getInventor());
+                pStmt.setString(9, p.getCompany());
+                pStmt.setString(10, p.getCity());
+                pStmt.setString(11, p.getCountry());
+                this.pStmt.addBatch();
+            }
+            pStmt.executeBatch();
+            this.connection.commit();
         }
         catch(Exception e){
             e.printStackTrace();
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
-            Helper.writeLog("fyp/log/dbstacktrace.log", sw.toString());
+            Helper.writeLog("fyp/log/dbstacktrace.log", sw.toString(), true);
         }
         finally{
             if(this.pStmt != null){
@@ -142,20 +163,20 @@ public class DatabaseConnector{
                 this.rs.close();
             } 
             catch(Exception e){e.printStackTrace();};
-        if(this.stmt != null) 
-            try{
-                this.stmt.close();
-            } 
-            catch(Exception e){e.printStackTrace();};
-        if(this.pStmt != null) 
-            try{
-                this.pStmt.close();
-            } 
-            catch(Exception e){e.printStackTrace();};
-        if(this.connection != null) 
-            try{
-                this.connection.close();
-            } 
-            catch(Exception e){e.printStackTrace();};
-    }
-}
+            if(this.stmt != null) 
+                try{
+                    this.stmt.close();
+                } 
+                catch(Exception e){e.printStackTrace();};
+                if(this.pStmt != null) 
+                    try{
+                        this.pStmt.close();
+                    } 
+                    catch(Exception e){e.printStackTrace();};
+                    if(this.connection != null) 
+                        try{
+                            this.connection.close();
+                        } 
+                        catch(Exception e){e.printStackTrace();};
+                    }
+                }
