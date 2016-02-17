@@ -2,6 +2,7 @@ package fyp.parser;
 import fyp.models.Patent;
 import fyp.utils.DatabaseConnector;
 import fyp.utils.Helper;
+import fyp.query.ESIndexer;
 
 import javax.xml.stream.XMLInputFactory;
 import java.nio.file.Files;
@@ -109,7 +110,11 @@ public class USPTOParser implements Runnable{
             p.setCountry(country);
             p.setDate(date);
             p.setDocId(docid);
-            p.setIPC(ipc);
+            if(ipc.equals("")){
+                p.setIPC(null);
+            }
+            else
+                p.setIPC(ipc);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -301,10 +306,12 @@ public class USPTOParser implements Runnable{
                         System.out.println("Count = " + count++ + " Doc id = " + p.getDocId());
                         p.clean();
                         patents.add(p);
-                        if(patents.size() == 1000){
+                        if(patents.size() == 10){
                             currentDocid = p.getDocId();
-                            db.insertPatent(patents, "patents");
-                            patents.clear();
+                            // db.insertPatent(patents, "patents");
+                            // patents.clear();
+                            ESIndexer.index(patents);
+                            return;
                         }
                     }
                     if(!start && p.getDocId().equals(docid)){

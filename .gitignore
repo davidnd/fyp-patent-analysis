@@ -67,5 +67,7 @@ data
 /backend/jars/
 /backend/models/
 /backend/index/
+/elasticsearch*/
+scripts/Tasks
 *.class
 /papers
