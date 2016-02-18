@@ -8,11 +8,13 @@ import java.io.InputStreamReader;
 // import java.net.MalformedURLException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
 
 public class ESIndexer {
     public ESIndexer(){
@@ -24,7 +26,7 @@ public class ESIndexer {
         obj.put("abstract", p.getAbstract());
         obj.put("text", p.getText());
         obj.put("claims", p.getClaims());
-        obj.put("date", p.getDate());
+        obj.put("date", p.getDate().toString());
         JSONArray companyList = new JSONArray();
         if(p.getCompany() != null){
             String [] companies = p.getCompany().split(";");
@@ -51,24 +53,25 @@ public class ESIndexer {
             }
         }
         obj.put("ipcs", ipcList);
-        String postUrl = "http://localhost:9200/patents/uspto";
-        System.out.println(obj);
+        String putUrl = "http://localhost:9200/patents/uspto/";
         try{
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpPost postReq = new HttpPost(postUrl);
-            StringEntity input = new StringEntity(obj.toString());
+            HttpPut putReq = new HttpPut(putUrl + p.getDocId());
+            System.out.println(obj.toJSONString());
+            StringEntity input = new StringEntity(obj.toJSONString());
             input.setContentType("application/json");
-            postReq.setEntity(input);
-            HttpResponse response = httpClient.execute(postReq);
+            putReq.setEntity(input);
+            HttpResponse response = httpClient.execute(putReq);
             if(response.getStatusLine().getStatusCode() != 201){
                 System.out.println("Post request failed");
+                System.out.println(response);
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             String output;
             while((output = br.readLine())!= null){
                 System.out.println(output);
             }
-            httpClient.getConnectionManager().shutDown();
+            httpClient.getConnectionManager().shutdown();
         }
         catch (Exception e){
             e.printStackTrace();

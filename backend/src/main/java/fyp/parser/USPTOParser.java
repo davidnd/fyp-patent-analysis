@@ -31,7 +31,7 @@ public class USPTOParser implements Runnable{
     private Thread thread;
     private String path;
     private DatabaseConnector db;
-    public static final String logFolder = "fyp/log/";
+    public static final String logFolder = "log/";
     public USPTOParser(String path, DatabaseConnector db){
         this.path = path;
         this.db = db;
@@ -251,8 +251,17 @@ public class USPTOParser implements Runnable{
     }
     public String check(){
         String logFile = getLogFileName();
-        String docid = null;
         File dir = new File(this.logFolder);
+        System.out.println(dir.getAbsolutePath());
+        try{
+            if(!dir.exists()){
+                dir.createNewFile();
+            }    
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        String docid = null;
         File [] files = dir.listFiles();
         for(File f: files){
             if(f.getName().equals(logFile)){

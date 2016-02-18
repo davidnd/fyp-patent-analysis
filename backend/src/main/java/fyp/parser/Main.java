@@ -11,8 +11,9 @@ class Main{
     public static void main(String[] args) {
         
         List <USPTOParser> parsers = new ArrayList <USPTOParser>();
-        String root = "../../data/grant";
+        String root = "../data/grant";
         File dirs = new File(root);
+        System.out.println(dirs.getAbsolutePath());
         File [] files = dirs.listFiles();
         for (File f: files) {
             if(f.isFile() && Helper.isXML(f.getName())){

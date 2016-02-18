@@ -68,6 +68,8 @@ data
 /backend/models/
 /backend/index/
 /elasticsearch*/
-scripts/Tasks
+backend/.gradle
+backend/.idea
+backend/build
 *.class
 /papers
