@@ -61,12 +61,12 @@ public class Helper{
             e.printStackTrace();
         }
     }
-    public static boolean isXML(String fileName){
+    public static boolean hasExtension(String fileName, String ext){
         if(fileName == null) return false;
         int i = fileName.lastIndexOf('.');
         if (i > 0) {
             String extension = fileName.substring(i+1);
-            if(extension.equals("xml")) return true;
+            if(extension.equalsIgnoreCase(ext)) return true;
         }
         return false;
     }

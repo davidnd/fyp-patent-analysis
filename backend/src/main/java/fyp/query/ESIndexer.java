@@ -57,7 +57,7 @@ public class ESIndexer {
         }
         obj.put("ipcs", ipcList);
         try{
-            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpClient httpClient = HttpClientBuilder.create().build();
             HttpPut putReq = new HttpPut(esURL + p.getDocId());
             System.out.println(obj.toJSONString());
             StringEntity input = new StringEntity(obj.toJSONString());
@@ -80,7 +80,7 @@ public class ESIndexer {
             e.printStackTrace();
         }
     }
-    public static String createIndex(Patent p){
+    public static String createIndexString(Patent p){
         JSONObject obj = new JSONObject();
         obj.put("title", p.getTitle());
         obj.put("abstract", p.getAbstract());
@@ -120,7 +120,7 @@ public class ESIndexer {
         for(Patent p: patents){
 //            index(p, esURL);
             jsonBulk = jsonBulk + "{\"index\":{\"_id\":" + "\"" + p.getDocId().toString() + "\"" + "}" + "\n";
-            jsonBulk += createIndex(p);
+            jsonBulk += createIndexString(p);
             jsonBulk += "\n";
         }
         try{

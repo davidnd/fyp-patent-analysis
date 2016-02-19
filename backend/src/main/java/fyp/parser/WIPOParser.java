@@ -75,7 +75,7 @@ public class WIPOParser{
         File [] files = dirs.listFiles();
         List <Patent> patents = new ArrayList <Patent>(20);
         for (File f: files) {
-            if(f.isFile() && Helper.isXML(f.getName())){
+            if(f.isFile() && Helper.hasExtension(f.getName(), "xml")){
                 System.out.println("Parsing " + f.getName());
                 Patent p = parse(f);
                 if(p == null) continue;

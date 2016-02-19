@@ -317,11 +317,12 @@ public class USPTOParser implements Runnable{
                         System.out.println("Count = " + count++ + " Doc id = " + p.getDocId());
                         p.clean();
                         patents.add(p);
-                        if(patents.size() == 1000){
+                        if(patents.size() == 10){
                             currentDocid = p.getDocId();
                             // db.insertPatent(patents, "patents");
                             ESIndexer.index(patents, this.esURL);
                             patents.clear();
+                            return;
                         }
                     }
                     if(!start && p.getDocId().equals(docid)){
