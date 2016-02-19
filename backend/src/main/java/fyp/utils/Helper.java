@@ -1,15 +1,8 @@
 package fyp.utils;
 
+import java.io.*;
 import java.util.Iterator;
-import java.io.InputStream;
-import java.io.FileInputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
 import java.util.Arrays;
-import java.io.FilenameFilter;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 public class Helper{
     public static String [] listDir(String addr){
@@ -98,5 +91,21 @@ public class Helper{
             e.printStackTrace();
         }
         return content;
+    }
+    public static String executeShellCommand(String cmd){
+        Process p;
+        StringBuffer output = new StringBuffer();
+        try {
+            p = Runtime.getRuntime().exec(cmd);
+            p.waitFor();
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line = "";
+            while((line = br.readLine())!= null){
+                output.append(line + "\n");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return output.toString();
     }
 }

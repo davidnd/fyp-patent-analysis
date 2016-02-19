@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import fyp.utils.Helper;
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -68,6 +69,8 @@ public class Crawler {
         try {
             url = new URL(urlString);
             FileUtils.copyURLToFile(url, file, 3000, 600000);
+            System.out.println("Unzipping .... ");
+            Helper.executeShellCommand("unzip -x " + destination + " -d ../data/grant");
             System.out.println("Done!");
         } catch (Exception e) {
             e.printStackTrace();

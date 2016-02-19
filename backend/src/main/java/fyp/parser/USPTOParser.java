@@ -354,6 +354,7 @@ public class USPTOParser implements Runnable{
             parse(docid);
         else
             System.out.println("The file was already parsed!");
+        Helper.executeShellCommand("rm " + path);
         // this.db.close();
     }
 }
