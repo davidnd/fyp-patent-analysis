@@ -68,6 +68,7 @@ data
 /backend/models/
 /backend/index/
 /elasticsearch*/
+/kibana/
 backend/.gradle
 backend/.idea
 backend/build

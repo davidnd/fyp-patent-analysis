@@ -17,17 +17,16 @@ class Main{
         File [] files = dirs.listFiles();
         for (File f: files) {
             if(f.isFile() && Helper.isXML(f.getName())){
-                DatabaseConnector connector = new DatabaseConnector("fyp");
-                connector.connect();
-                parsers.add(new USPTOParser(f.getAbsolutePath(), connector));
+                // DatabaseConnector connector = new DatabaseConnector("fyp");
+                // connector.connect();
+                parsers.add(new USPTOParser(f.getAbsolutePath()));
             }
         }
-        // test();
     } 
     public static void test(){
-        String root = "../../data/grant/ipg150310.xml";
-        DatabaseConnector connector = new DatabaseConnector("fyp");
-        connector.connect();
-        USPTOParser parser = new USPTOParser(root, connector);
+        // String root = "../../data/grant/ipg150310.xml";
+        // DatabaseConnector connector = new DatabaseConnector("fyp");
+        // connector.connect();
+        // USPTOParser parser = new USPTOParser(root, connector);
     }
 }

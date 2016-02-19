@@ -30,11 +30,14 @@ import java.util.ArrayList;
 public class USPTOParser implements Runnable{
     private Thread thread;
     private String path;
-    private DatabaseConnector db;
+    // private DatabaseConnector db;
     public static final String logFolder = "log/";
-    public USPTOParser(String path, DatabaseConnector db){
+    private String esURL = "http://localhost:9200/patents/";
+    private String indexType = "uspto";
+    public USPTOParser(String path){
         this.path = path;
-        this.db = db;
+        // this.db = db;
+        this.esURL += indexType + "/";
         this.thread = new Thread(this);
         thread.start();
     }
@@ -172,8 +175,7 @@ public class USPTOParser implements Runnable{
             }
             event = eventReader.nextEvent();
         }
-        String [] res = {company, city, country};
-        return res;
+        return new String[]{company, city, country};
     }
     public Date parseDate(XMLEvent event, XMLEventReader eventReader) throws XMLStreamException, ParseException{
         String d = null;
@@ -315,12 +317,11 @@ public class USPTOParser implements Runnable{
                         System.out.println("Count = " + count++ + " Doc id = " + p.getDocId());
                         p.clean();
                         patents.add(p);
-                        if(patents.size() == 10){
+                        if(patents.size() == 1000){
                             currentDocid = p.getDocId();
                             // db.insertPatent(patents, "patents");
-                            // patents.clear();
-                            ESIndexer.index(patents);
-                            return;
+                            ESIndexer.index(patents, this.esURL);
+                            patents.clear();
                         }
                     }
                     if(!start && p.getDocId().equals(docid)){
@@ -332,9 +333,9 @@ public class USPTOParser implements Runnable{
                 }
                 content += line;
             }
-            if(patents.size() > 0){
-                db.insertPatent(patents, "patents");
-            }
+            // if(patents.size() > 0){
+            //     db.insertPatent(patents, "patents");
+            // }
             Helper.writeLog(logPath, "Done", true);
         }
         catch(Exception e){
@@ -352,6 +353,6 @@ public class USPTOParser implements Runnable{
             parse(docid);
         else
             System.out.println("The file was already parsed!");
-        this.db.close();
+        // this.db.close();
     }
 }

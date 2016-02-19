@@ -17,10 +17,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
 public class ESIndexer {
+
     public ESIndexer(){
 
     }
-    public static boolean index (Patent p){
+    public static void index (Patent p, String esURL){
         JSONObject obj = new JSONObject();
         obj.put("title", p.getTitle());
         obj.put("abstract", p.getAbstract());
@@ -53,10 +54,9 @@ public class ESIndexer {
             }
         }
         obj.put("ipcs", ipcList);
-        String putUrl = "http://localhost:9200/patents/uspto/";
         try{
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpPut putReq = new HttpPut(putUrl + p.getDocId());
+            HttpPut putReq = new HttpPut(esURL + p.getDocId());
             System.out.println(obj.toJSONString());
             StringEntity input = new StringEntity(obj.toJSONString());
             input.setContentType("application/json");
@@ -76,11 +76,10 @@ public class ESIndexer {
         catch (Exception e){
             e.printStackTrace();
         }
-        return true;
     }
-    public static void index (List <Patent> patents){
+    public static void index (List <Patent> patents, String esURL){
         for(Patent p: patents){
-            index(p);
+            index(p, esURL);
         }
     }
 }
