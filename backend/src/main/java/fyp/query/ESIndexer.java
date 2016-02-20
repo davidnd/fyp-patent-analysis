@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 // import java.net.MalformedURLException;
+import fyp.utils.Helper;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -116,6 +117,9 @@ public class ESIndexer {
         return obj.toJSONString();
     }
     public static void index (List <Patent> patents, String esURL){
+        String indexInfo = "Indexing " + patents.size() + " patents from id = " + patents.get(0).getDocId() + " to id = " + patents.get(patents.size()-1).getDocId();
+        System.out.println(indexInfo);
+        Helper.writeLog("log/runtime.log", indexInfo + "\n", true);
         String jsonBulk = "";
         for(Patent p: patents){
 //            index(p, esURL);
@@ -128,12 +132,13 @@ public class ESIndexer {
             HttpPut putReq = new HttpPut(esURL + "_bulk");
             StringEntity input = new StringEntity(jsonBulk);
             input.setContentType("application/json");
-            System.out.println(input);
+//            System.out.println(input);
             putReq.setEntity(input);
             HttpResponse response = httpClient.execute(putReq);
             if(response.getStatusLine().getStatusCode() != 201 && response.getStatusLine().getStatusCode() != 200){
                 System.out.println("Post request failed");
                 System.out.println(response);
+                Helper.writeLog("log/runtime.log", response + "\n", true);
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             String output;
@@ -145,6 +150,6 @@ public class ESIndexer {
         catch (Exception e){
             e.printStackTrace();
         }
-        System.out.println(jsonBulk);
+//        System.out.println(jsonBulk);
     }
 }

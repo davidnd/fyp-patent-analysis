@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 public class USPTOParser implements Runnable{
-    private Thread thread;
     private String path;
     // private DatabaseConnector db;
     public static final String logFolder = "log/";
@@ -38,8 +37,6 @@ public class USPTOParser implements Runnable{
         this.path = path;
         // this.db = db;
         this.esURL += indexType + "/";
-        this.thread = new Thread(this);
-        thread.start();
     }
 
     public Patent parseString(String content){
@@ -314,15 +311,15 @@ public class USPTOParser implements Runnable{
                         continue;
                     }
                     if(start && !p.getDocId().equals(docid)){
-                        System.out.println("Count = " + count++ + " Doc id = " + p.getDocId());
+//                        System.out.println("Count = " + count++ + " Doc id = " + p.getDocId());
                         p.clean();
                         patents.add(p);
-                        if(patents.size() == 10){
+                        if(patents.size() == 1000){
                             currentDocid = p.getDocId();
                             // db.insertPatent(patents, "patents");
                             ESIndexer.index(patents, this.esURL);
                             patents.clear();
-                            return;
+//                            return;
                         }
                     }
                     if(!start && p.getDocId().equals(docid)){
