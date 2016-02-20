@@ -60,9 +60,11 @@ public class Crawler {
     }
     public void download(String urlString, String destination){
         System.out.println("Downloading file at " + urlString + " to " + destination);
+        Helper.writeLog("log/download.log", "Downloading file at " + urlString + " to " + destination, true);
         File file = new File(destination);
         if(file.exists()){
             System.out.println("File was already downloaded");
+            Helper.writeLog("log/download.log", "Aborted, file was already downloaded!", true);
             return;
         }
         URL url;
@@ -70,8 +72,10 @@ public class Crawler {
             url = new URL(urlString);
             FileUtils.copyURLToFile(url, file, 3000, 600000);
             System.out.println("Unzipping .... ");
+            Helper.writeLog("log/download.log", "Unzipping file ... ", true);
             Helper.executeShellCommand("unzip -x " + destination + " -d ../data/grant");
             System.out.println("Done!");
+            Helper.writeLog("log/download.log", "Done - file " + file.getName() + " downloaded and unzipped!", true);
         } catch (Exception e) {
             e.printStackTrace();
         }
