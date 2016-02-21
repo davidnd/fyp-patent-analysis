@@ -3,6 +3,9 @@ package fyp.parser;
 import fyp.utils.Helper;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -13,11 +16,12 @@ public class WorkerThread implements Runnable {
     @Override
     public void run() {
         System.out.println("Working thread starting...");
-        Helper.writeLog("log/runtime.log", "Working thread STARTING...", true);
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Helper.writeLog("log/runtime.log", "Working thread STARTING at " + dateFormat.format(date) + "\n", true);
         ExecutorService executor = Executors.newFixedThreadPool(5);
         String root = "../data/grant";
         File dirs = new File(root);
-        System.out.println(dirs.getAbsolutePath());
         File [] files = dirs.listFiles();
         int count = 0;
         for (File f: files) {
@@ -35,7 +39,8 @@ public class WorkerThread implements Runnable {
         while(!executor.isTerminated()){
 
         }
-        Helper.writeLog("log/runtime.log", "Working thread FINISHED!\n", true);
+        Date finsihed = new Date();
+        Helper.writeLog("log/runtime.log", "Working thread FINISHED at " + dateFormat.format(finsihed) + "\n", true);
         System.out.println("Worker thread finished!");
     }
 }

@@ -38,7 +38,6 @@ public class Helper{
         return s.trim().replaceAll("\\r\\n|\\r|\\n", " ");
     }
     public static void writeLog(String path, String s, boolean b){
-        System.out.println(path);
         try{
             File file = new File(path);
             file.getParentFile().mkdirs();

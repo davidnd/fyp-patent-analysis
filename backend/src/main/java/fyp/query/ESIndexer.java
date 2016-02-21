@@ -1,6 +1,8 @@
 package fyp.query;
 
 import fyp.models.Patent;
+
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -122,7 +124,6 @@ public class ESIndexer {
         Helper.writeLog("log/runtime.log", indexInfo + "\n", true);
         String jsonBulk = "";
         for(Patent p: patents){
-//            index(p, esURL);
             jsonBulk = jsonBulk + "{\"index\":{\"_id\":" + "\"" + p.getDocId().toString() + "\"" + "}" + "\n";
             jsonBulk += createIndexString(p);
             jsonBulk += "\n";
@@ -130,26 +131,22 @@ public class ESIndexer {
         try{
             HttpClient httpClient = HttpClientBuilder.create().build();
             HttpPut putReq = new HttpPut(esURL + "_bulk");
-            StringEntity input = new StringEntity(jsonBulk);
+            StringEntity input = new StringEntity(jsonBulk, StandardCharsets.UTF_8);
             input.setContentType("application/json");
-//            System.out.println(input);
             putReq.setEntity(input);
             HttpResponse response = httpClient.execute(putReq);
             if(response.getStatusLine().getStatusCode() != 201 && response.getStatusLine().getStatusCode() != 200){
                 System.out.println("Post request failed");
-                System.out.println(response);
                 Helper.writeLog("log/runtime.log", response + "\n", true);
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             String output;
             while((output = br.readLine())!= null){
-                System.out.println(output);
             }
             httpClient.getConnectionManager().shutdown();
         }
         catch (Exception e){
             e.printStackTrace();
         }
-//        System.out.println(jsonBulk);
     }
 }

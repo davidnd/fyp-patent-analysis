@@ -251,7 +251,6 @@ public class USPTOParser implements Runnable{
     public String check(){
         String logFile = getLogFileName();
         File dir = new File(this.logFolder);
-        System.out.println(dir.getAbsolutePath());
         try{
             if(!dir.exists()){
                 dir.createNewFile();
@@ -291,7 +290,7 @@ public class USPTOParser implements Runnable{
         if(docid != null){
             start = false;
         }
-        List <Patent> patents = new ArrayList <Patent>(1000);
+        List <Patent> patents = new ArrayList <>(1002);
         int count = 0;
         File f = new File(this.path);
         String name = getLogFileName();
@@ -311,15 +310,13 @@ public class USPTOParser implements Runnable{
                         continue;
                     }
                     if(start && !p.getDocId().equals(docid)){
-//                        System.out.println("Count = " + count++ + " Doc id = " + p.getDocId());
+                        System.out.println("Count = " + count++ + " Doc id = " + p.getDocId());
                         p.clean();
                         patents.add(p);
                         if(patents.size() == 1000){
                             currentDocid = p.getDocId();
-                            // db.insertPatent(patents, "patents");
                             ESIndexer.index(patents, this.esURL);
                             patents.clear();
-//                            return;
                         }
                     }
                     if(!start && p.getDocId().equals(docid)){
@@ -331,10 +328,11 @@ public class USPTOParser implements Runnable{
                 }
                 content += line;
             }
-            // if(patents.size() > 0){
-            //     db.insertPatent(patents, "patents");
-            // }
+             if(patents.size() > 0){
+                 ESIndexer.index(patents, this.esURL);
+             }
             Helper.writeLog(logPath, "Done", true);
+            Helper.writeLog("log/runtime.log", "Done with " + f.getName() + "\n", true);
         }
         catch(Exception e){
             if(currentDocid != null){
@@ -352,6 +350,5 @@ public class USPTOParser implements Runnable{
         else
             System.out.println("The file was already parsed!");
         Helper.executeShellCommand("rm " + path);
-        // this.db.close();
     }
 }
