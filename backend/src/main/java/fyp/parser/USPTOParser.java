@@ -31,7 +31,7 @@ public class USPTOParser implements Runnable{
     private String path;
     // private DatabaseConnector db;
     public static final String logFolder = "log/";
-    private String esURL = "http://localhost:9200/patents/";
+    private String esURL = "http://localhost:9200/patent/";
     private String indexType = "uspto";
     public USPTOParser(String path){
         this.path = path;
