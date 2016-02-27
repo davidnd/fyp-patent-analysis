@@ -141,8 +141,8 @@ public class ESIndexer {
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             String output;
-            while((output = br.readLine())!= null){
-            }
+//            while((output = br.readLine())!= null){
+//            }
             httpClient.getConnectionManager().shutdown();
         }
         catch (Exception e){

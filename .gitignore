@@ -74,3 +74,4 @@ backend/.idea
 backend/build
 *.class
 /papers
+/.idea
