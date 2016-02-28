@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-class Main{
+class ParserMain{
     public static void main(String[] args) throws InterruptedException{
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

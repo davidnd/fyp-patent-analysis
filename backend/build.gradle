@@ -10,7 +10,6 @@
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 apply plugin: 'application'
-mainClassName = 'fyp.parser.Main'
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use 'jcenter' for resolving your dependencies.
@@ -37,4 +36,18 @@ dependencies {
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.
     testCompile 'junit:junit:4.12'
+}
+
+task startCrawler (dependsOn:  'classes', type: JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = "fyp.parser.CrawlerMain"
+}
+
+task startParser (dependsOn:  'classes', type: JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = "fyp.parser.ParserMain"
+}
+task startClassifier (dependsOn : 'classes', type: JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = "fyp.classifier.Main"
 }

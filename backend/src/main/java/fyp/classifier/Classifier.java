@@ -18,7 +18,7 @@ import fyp.utils.Helper;
 public class Classifier{
     public static int patentCount;
     public static int THRES_HOLD = 10;
-    String dir = "../models/";
+    String dir = "models/";
     List <ClassModel> models;
     public Classifier(){
         this.models = new ArrayList <ClassModel> ();
