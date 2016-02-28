@@ -41,6 +41,9 @@ dependencies {
 task startCrawler (dependsOn:  'classes', type: JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = "fyp.parser.CrawlerMain"
+    if(project.hasProperty("numberOfWeeks")){
+        args Eval.me(numberOfWeeks);
+    }
 }
 
 task startParser (dependsOn:  'classes', type: JavaExec){

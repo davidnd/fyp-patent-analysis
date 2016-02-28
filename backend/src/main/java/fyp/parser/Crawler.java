@@ -47,6 +47,7 @@ public class Crawler {
                     if(id != -1){
                         boolean res = download(googleLinks.get(id), saveDes, filename);
                         if(res) limit--;
+                        System.out.println("limit left = " + limit);
                     }
                     else{
 //                        download(s, saveDes + filename);
