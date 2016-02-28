@@ -7,6 +7,6 @@ public class CrawlerTest {
     public void sample() {
         String url = "https://data.uspto.gov/uspto.html";
         Crawler crawler = new Crawler(url);
-        crawler.run();
+        crawler.run(10);
     }
 }

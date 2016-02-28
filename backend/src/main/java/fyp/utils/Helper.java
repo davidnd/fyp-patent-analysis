@@ -92,9 +92,9 @@ public class Helper{
         return content;
     }
     public static String executeShellCommand(String cmd){
-        Process p;
+        Process p = null;
         StringBuffer output = new StringBuffer();
-        try {
+        try{
             p = Runtime.getRuntime().exec(cmd);
             p.waitFor();
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -104,6 +104,10 @@ public class Helper{
             }
         }catch (Exception e){
             e.printStackTrace();
+        }finally{
+            if(p != null){
+                p.destroyForcibly();
+            }
         }
         return output.toString();
     }
