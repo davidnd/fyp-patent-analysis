@@ -50,7 +50,9 @@ public class Crawler {
                         System.out.println("limit left = " + limit);
                     }
                     else{
-//                        download(s, saveDes + filename);
+                        //download from uspto if google does not store this week's data
+                        boolean res = download(s, saveDes, filename);
+                        if(res) limit--;
                         System.out.println("this file not in google :v");
                     }
                 }
@@ -78,7 +80,6 @@ public class Crawler {
         File logfile = new File(logFolder + name + ".log");
         if(logfile.exists()){
             System.out.println("File was already downloaded");
-            Helper.writeLog("log/download.log", "Aborted, file was already downloaded and parsed!", true);
             return false;
         }
         URL url;
@@ -87,7 +88,6 @@ public class Crawler {
         if(xmlFile.exists()){
             //xml alr exist, waiting to be parsed, ignore
             System.out.println("File was already downloaded");
-            Helper.writeLog("log/download.log", "Aborted, file was already downloaded and unzipped!", true);
             return false;
         }
         try {
