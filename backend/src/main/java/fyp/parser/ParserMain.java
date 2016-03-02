@@ -15,6 +15,6 @@ class ParserMain{
         Helper.writeLog("log/runtime.log", "Starting the parser at " + dateFormat.format(date), true);
         ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(1);
         WorkerThread worker = new WorkerThread();
-        scheduledThreadPool.scheduleWithFixedDelay(worker, 0, 60, TimeUnit.SECONDS);
+        scheduledThreadPool.scheduleWithFixedDelay(worker, 0, 2, TimeUnit.MINUTES);
     }
 }

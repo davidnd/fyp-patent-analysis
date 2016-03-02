@@ -19,7 +19,7 @@ public class WorkerThread implements Runnable {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Helper.writeLog("log/runtime.log", "Working thread STARTING at " + dateFormat.format(date), true);
-        ExecutorService executor = Executors.newFixedThreadPool(2);
+        ExecutorService executor = Executors.newFixedThreadPool(4);
         String root = "../data/grant";
         File dirs = new File(root);
         File [] files = dirs.listFiles();
